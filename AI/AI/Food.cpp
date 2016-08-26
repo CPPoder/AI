@@ -13,7 +13,7 @@ Food::Food(sf::Vector2f position)
 	mCircleShape.setRadius(size);
 	mCircleShape.setOrigin(size, size);
 	mCircleShape.setPosition(position);
-	mCircleShape.setFillColor(sf::Color(125, 0, 125));
+	mCircleShape.setFillColor(sf::Color(200, 125, 0));
 }
 
 Food::~Food()

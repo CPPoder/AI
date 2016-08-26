@@ -20,6 +20,8 @@ private:
 	float mFertility = 0.f; //Ability of Reproduction
 	bool mAbleToReproduce = false;
 
+	bool mHasDied = false;
+
 
 
 public:
@@ -33,9 +35,11 @@ public:
 	void handleEvents() override;
 
 	void setPosition(sf::Vector2f position);
+	void addHealth(float health);
 
 	sf::Vector2f getPosition() const;
 	float getRadius() const;
+	bool getHasDied() const;
 
 
 

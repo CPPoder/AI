@@ -10,16 +10,16 @@ World::World()
 World::World(sf::Vector2u worldSize)
 	: mWorldSize(static_cast<sf::Vector2f>(worldSize))
 {
-	unsigned int const numOfHerbies = 10;
-	unsigned int const numOfCarnies = 10;
+	unsigned int const numOfHerbies = 15;
+	unsigned int const numOfCarnies = 5;
 
 	for (unsigned int i = 0; i < numOfHerbies; i++)
 	{
-		mListOfHerbivores.push_back(new Herbivore(sf::Vector2f(200.f, 200.f)));
+		mListOfHerbivores.push_back(new Herbivore(sf::Vector2f(myMath::randIntervalf(0, static_cast<int>(mWorldSize.x)), myMath::randIntervalf(0, static_cast<int>(mWorldSize.y)))));
 	}
 	for (unsigned int i = 0; i < numOfCarnies; i++)
 	{
-		mListOfCarnivores.push_back(new Carnivore(sf::Vector2f(300.f, 200.f)));
+		mListOfCarnivores.push_back(new Carnivore(sf::Vector2f(myMath::randIntervalf(0, static_cast<int>(mWorldSize.x)), myMath::randIntervalf(0, static_cast<int>(mWorldSize.y)))));
 	}
 	for (unsigned int i = 0; i < mNumOfFood; i++)
 	{
@@ -63,6 +63,17 @@ void World::update(sf::Time frametime)
 
 	//Herbies eat Food
 	herbiesEatFood();
+
+	//Carnies eat Herbies
+	carniesEatHerbies();
+
+	//Spawn Food
+	spawnFood(frametime);
+
+	//Creatures die without food
+	creaturesDieWithoutFood();
+
+
 }
 
 void World::render(sf::RenderWindow *renderWindow)
@@ -101,11 +112,88 @@ void World::herbiesEatFood()
 			if (mySFML::lengthOf(foodPos - herbPos) < (foodRad + herbRad))
 			{
 				foodIt = mListOfFood.erase(foodIt);
+				(*herbIt)->addHealth(10.f);
 			}
 			else
 			{
 				++foodIt;
 			}
+		}
+	}
+}
+
+//Carnies eat Herbies
+void World::carniesEatHerbies()
+{
+	for (std::list<Carnivore*>::iterator carnIt = mListOfCarnivores.begin(); carnIt != mListOfCarnivores.end(); ++carnIt)
+	{
+		sf::Vector2f carnPos = (*carnIt)->getPosition();
+		float carnRad = (*carnIt)->getRadius();
+		for (std::list<Herbivore*>::iterator herbIt = mListOfHerbivores.begin(); herbIt != mListOfHerbivores.end();)
+		{
+			sf::Vector2f herbPos = (*herbIt)->getPosition();
+			float herbRad = (*herbIt)->getRadius();
+			if (mySFML::lengthOf(herbPos - carnPos) < (herbRad + carnRad))
+			{
+				herbIt = mListOfHerbivores.erase(herbIt);
+				(*carnIt)->addHealth(15.f);
+			}
+			else
+			{
+				++herbIt;
+			}
+		}
+	}
+}
+
+
+//Spawn Food
+void World::spawnFood(sf::Time frametime)
+{
+	unsigned int spawnableFood = 0;
+	mTimeSinceLastFoodSpawn = mTimeSinceLastFoodSpawn + frametime;
+	while (true)
+	{
+		if (mTimeSinceLastFoodSpawn >= mFoodSpawningTime)
+		{
+			mTimeSinceLastFoodSpawn = mTimeSinceLastFoodSpawn - mFoodSpawningTime;
+			spawnableFood += 1;
+		}
+		else
+		{
+			break;
+		}
+	}
+	for (unsigned int i = 0; i < spawnableFood; ++i)
+	{
+		mListOfFood.push_back(new Food(sf::Vector2f(myMath::randIntervalf(0, static_cast<int>(mWorldSize.x)), myMath::randIntervalf(0, static_cast<int>(mWorldSize.y)))));
+	}
+}
+
+
+//Creatures die without food
+void World::creaturesDieWithoutFood()
+{
+	for (std::list<Herbivore*>::iterator herbIt = mListOfHerbivores.begin(); herbIt != mListOfHerbivores.end();)
+	{
+		if ((*herbIt)->getHasDied())
+		{
+			herbIt = mListOfHerbivores.erase(herbIt);
+		}
+		else
+		{
+			++herbIt;
+		}
+	}
+	for (std::list<Carnivore*>::iterator carnIt = mListOfCarnivores.begin(); carnIt != mListOfCarnivores.end();)
+	{
+		if ((*carnIt)->getHasDied())
+		{
+			carnIt = mListOfCarnivores.erase(carnIt);
+		}
+		else
+		{
+			++carnIt;
 		}
 	}
 }

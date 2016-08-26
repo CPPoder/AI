@@ -26,6 +26,8 @@ private:
 	sf::Vector2f mWorldSize;
 
 	unsigned int const mNumOfFood = 40;
+	sf::Time mFoodSpawningTime = sf::seconds(2.f);
+	sf::Time mTimeSinceLastFoodSpawn = sf::seconds(0.f);
 
 
 public:
@@ -38,6 +40,9 @@ public:
 	void handleEvents() override;
 
 	void herbiesEatFood();
+	void carniesEatHerbies();
+	void spawnFood(sf::Time frametime);
+	void creaturesDieWithoutFood();
 };
 
 

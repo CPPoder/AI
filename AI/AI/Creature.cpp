@@ -35,12 +35,23 @@ Creature::~Creature()
 
 void Creature::update(sf::Time frametime)
 {
+	//Translation
 	sf::Vector2f wantedForce = pBrain->calculateWantedForce();
 	float const viscosity = 0.001f;
 	sf::Vector2f frictionForce = -6.f * 3.141592653f * viscosity * mCircleShape.getRadius() * mVelocity;
 	sf::Vector2f accelaration = (wantedForce + frictionForce) / mMass;
 	mVelocity = mVelocity + frametime.asSeconds() * accelaration;
 	mCircleShape.move(mVelocity * frametime.asSeconds());
+
+	//Loss of Health
+	float const healthLossConstant = 0.5f;
+	mHealth = mHealth - (healthLossConstant * frametime.asSeconds());
+	if (mHealth < 0.f)
+	{
+		mHealth = 0.f;
+		mHasDied = true;
+	}
+	std::cout << mHealth << std::endl;
 }
 
 void Creature::render(sf::RenderWindow *renderWindow)
@@ -58,6 +69,14 @@ void Creature::setPosition(sf::Vector2f position)
 {
 	mCircleShape.setPosition(position);
 }
+void Creature::addHealth(float health)
+{
+	mHealth = mHealth + health;
+	if (mHealth > 100.f)
+	{
+		mHealth = 100.f;
+	}
+}
 
 
 sf::Vector2f Creature::getPosition() const
@@ -67,4 +86,8 @@ sf::Vector2f Creature::getPosition() const
 float Creature::getRadius() const
 {
 	return mCircleShape.getRadius();
+}
+bool Creature::getHasDied() const
+{
+	return mHasDied;
 }
