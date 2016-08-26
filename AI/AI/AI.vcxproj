@@ -155,6 +155,7 @@
     <ClInclude Include="Carnivore.hpp" />
     <ClInclude Include="Creature.hpp" />
     <ClInclude Include="Element.hpp" />
+    <ClInclude Include="Food.hpp" />
     <ClInclude Include="Framework.hpp" />
     <ClInclude Include="Herbivore.hpp" />
     <ClInclude Include="mySFMLVectorFunctions.hpp" />
@@ -168,6 +169,7 @@
     <ClCompile Include="Carnivore.cpp" />
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="Element.cpp" />
+    <ClCompile Include="Food.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="Herbivore.cpp" />
     <ClCompile Include="main.cpp" />

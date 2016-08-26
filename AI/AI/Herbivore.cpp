@@ -9,7 +9,7 @@ Herbivore::Herbivore()
 }
 
 Herbivore::Herbivore(sf::Vector2f position)
-	: Creature::Creature(position, sf::Color::Green)
+	: Creature::Creature(position, sf::Color::Green, 10.f)
 {
 }
 

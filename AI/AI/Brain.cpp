@@ -30,7 +30,7 @@ Brain::~Brain()
 //Calculate the wanted Force
 sf::Vector2f Brain::calculateWantedForce()
 {
-	sf::Vector2f rnv = mySFML::randNormalVector();
+	sf::Vector2f rnv = mySFML::dirtyRandNormalVector(50);
 	/*if (rnv.y < 0)
 	{
 		counter1 += 1;

@@ -6,7 +6,7 @@ Framework::Framework()
 {
 	srand(time(0));
 
-	sf::Vector2u windowSize(800, 800);
+	sf::Vector2u windowSize(850, 850);
 	pRenderWindow = new sf::RenderWindow(sf::VideoMode(windowSize.x, windowSize.y), "Artificial Intelligence");
 	pWorld = new World(windowSize);
 

@@ -18,7 +18,7 @@ Creature::Creature(sf::Vector2f position, sf::Color color, float size)
 	  mVelocity(0.f, 0.f)
 {
 	mCircleShape.setRadius(size);
-	mCircleShape.setOrigin(size / 2.f, size / 2.f);
+	mCircleShape.setOrigin(size, size);
 	mCircleShape.setPosition(position);
 	mCircleShape.setFillColor(color);
 	
@@ -63,4 +63,8 @@ void Creature::setPosition(sf::Vector2f position)
 sf::Vector2f Creature::getPosition() const
 {
 	return mCircleShape.getPosition();
+}
+float Creature::getRadius() const
+{
+	return mCircleShape.getRadius();
 }

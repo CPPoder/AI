@@ -12,12 +12,13 @@ private:
 	sf::CircleShape mCircleShape;
 
 	Brain *pBrain;
-	//pBrain->calculateWantedForce(Inputs)
-	//pBrain->mutate(Parameter?)
-	//...
 
 	float mMass;
 	sf::Vector2f mVelocity;
+
+	float mHealth = 90.f;
+	float mFertility = 0.f; //Ability of Reproduction
+	bool mAbleToReproduce = false;
 
 
 
@@ -34,6 +35,7 @@ public:
 	void setPosition(sf::Vector2f position);
 
 	sf::Vector2f getPosition() const;
+	float getRadius() const;
 
 
 

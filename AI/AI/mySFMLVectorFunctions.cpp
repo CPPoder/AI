@@ -14,10 +14,10 @@ namespace mySFML {
 		return sf::Vector2f(cos(angleInRadiant), sin(angleInRadiant));
 	}
 
-	sf::Vector2f mySFML::randNormalVector()
+	sf::Vector2f mySFML::dirtyRandNormalVector(int parameter)
 	{
 		//return mySFML::normalize(sf::Vector2f(static_cast<float>(rand()), static_cast<float>(rand())));
-		return mySFML::normalize(sf::Vector2f(myMath::randIntervalf(-1000,1000),myMath::randIntervalf(-1000,1000)));
+		return mySFML::normalize(sf::Vector2f(myMath::randIntervalf(-parameter, parameter),myMath::randIntervalf(-parameter, parameter)));
 	}
 
 	bool mySFML::smaller(sf::Vector2f smallerVector, sf::Vector2f largerVector)

@@ -21,6 +21,10 @@ World::World(sf::Vector2u worldSize)
 	{
 		mListOfCarnivores.push_back(new Carnivore(sf::Vector2f(300.f, 200.f)));
 	}
+	for (unsigned int i = 0; i < mNumOfFood; i++)
+	{
+		mListOfFood.push_back(new Food(sf::Vector2f(myMath::randIntervalf(0, static_cast<int>(mWorldSize.x)), myMath::randIntervalf(0, static_cast<int>(mWorldSize.y)))));
+	}
 }
 
 World::~World()
@@ -56,10 +60,17 @@ void World::update(sf::Time frametime)
 	{
 		addPeriodicity(carn);
 	}
+
+	//Herbies eat Food
+	herbiesEatFood();
 }
 
 void World::render(sf::RenderWindow *renderWindow)
 {
+	for (auto food : mListOfFood)
+	{
+		food->render(renderWindow);
+	}
 	for (auto herb : mListOfHerbivores)
 	{
 		herb->render(renderWindow);
@@ -73,4 +84,28 @@ void World::render(sf::RenderWindow *renderWindow)
 void World::handleEvents()
 {
 
+}
+
+
+//Herbies eat Food
+void World::herbiesEatFood()
+{
+	for (std::list<Herbivore*>::iterator herbIt = mListOfHerbivores.begin(); herbIt != mListOfHerbivores.end(); ++herbIt)
+	{
+		sf::Vector2f herbPos = (*herbIt)->getPosition();
+		float herbRad = (*herbIt)->getRadius();
+		for (std::list<Food*>::iterator foodIt = mListOfFood.begin(); foodIt != mListOfFood.end();)
+		{
+			sf::Vector2f foodPos = (*foodIt)->getPosition();
+			float foodRad = (*foodIt)->getRadius();
+			if (mySFML::lengthOf(foodPos - herbPos) < (foodRad + herbRad))
+			{
+				foodIt = mListOfFood.erase(foodIt);
+			}
+			else
+			{
+				++foodIt;
+			}
+		}
+	}
 }

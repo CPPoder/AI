@@ -9,7 +9,7 @@ Carnivore::Carnivore()
 }
 
 Carnivore::Carnivore(sf::Vector2f position)
-	: Creature::Creature(position, sf::Color::Red)
+	: Creature::Creature(position, sf::Color::Red, 15.f)
 {
 }
 

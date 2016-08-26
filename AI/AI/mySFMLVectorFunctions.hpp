@@ -31,7 +31,7 @@ namespace mySFML {
 
 	sf::Vector2f meanVector(sf::Vector2f vec1, sf::Vector2f vec2);
 	sf::Vector2f createNormalVectorWithAngle(float angleInRadiant);
-	sf::Vector2f randNormalVector();
+	sf::Vector2f dirtyRandNormalVector(int parameter);
 
 	//Comparisons
 	bool smaller(sf::Vector2f smallerVector, sf::Vector2f largerVector);
