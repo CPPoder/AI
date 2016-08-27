@@ -43,7 +43,12 @@ void Framework::handleEvents()
 
 void Framework::update()
 {
-	pWorld->update(pClock->restart());
+	float timeFactor = 1.f;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P))
+	{
+		timeFactor = 0.f;
+	}
+	pWorld->update(timeFactor * pClock->restart());
 }
 
 void Framework::render()

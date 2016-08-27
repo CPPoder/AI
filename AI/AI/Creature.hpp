@@ -4,29 +4,36 @@
 
 #include "Element.hpp"
 #include "Brain.hpp"
+#include "Bar.hpp"
 
 
 class Creature : public Element
 {
 private:
-	sf::CircleShape mCircleShape;
-
-	sf::RectangleShape mHealthBar;
-	sf::Vector2f mVecFromCircleToHealthBar = sf::Vector2f(-15.f, -20.f);
-	sf::Vector2f mSizeOfFullHealthBar = sf::Vector2f(30.f, 3.f);
-	sf::RectangleShape mLostHealthBar;
-
 	Brain *pBrain;
 
 	float mMass;
 	sf::Vector2f mVelocity;
 
-	float const mFullHealth = 100.f;
-	float mHealth = 90.f;
-	float mFertility = 0.f; //Ability of Reproduction
+	float const mFullHealth;
+	float mHealth;
+
+	float const mFullFertility;
+	float mFertility; //Ability of Reproduction
 	bool mAbleToReproduce = false;
 
 	bool mHasDied = false;
+
+
+	sf::CircleShape mCircleShape;
+
+	sf::Vector2f mBarSize;
+
+	sf::Vector2f mVecFromCircleToHealthBar;
+	Bar mHealthBar;
+
+	sf::Vector2f mVecFromCircleToFertilityBar;
+	Bar mFertilityBar;
 
 
 
@@ -42,10 +49,12 @@ public:
 
 	void setPosition(sf::Vector2f position);
 	void addHealth(float health);
+	void resetFertility();
 
 	sf::Vector2f getPosition() const;
 	float getRadius() const;
 	bool getHasDied() const;
+	bool getAbleToReproduce() const;
 
 
 

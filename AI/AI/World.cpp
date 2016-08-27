@@ -11,7 +11,7 @@ World::World(sf::Vector2u worldSize)
 	: mWorldSize(static_cast<sf::Vector2f>(worldSize))
 {
 	unsigned int const numOfHerbies = 15;
-	unsigned int const numOfCarnies = 5;
+	unsigned int const numOfCarnies = 2;
 
 	for (unsigned int i = 0; i < numOfHerbies; i++)
 	{
@@ -72,6 +72,9 @@ void World::update(sf::Time frametime)
 
 	//Creatures die without food
 	creaturesDieWithoutFood();
+
+	//CreaturesReproduce
+	creaturesReproduce();
 
 
 }
@@ -136,7 +139,7 @@ void World::carniesEatHerbies()
 			if (mySFML::lengthOf(herbPos - carnPos) < (herbRad + carnRad))
 			{
 				herbIt = mListOfHerbivores.erase(herbIt);
-				(*carnIt)->addHealth(15.f);
+				(*carnIt)->addHealth(50.f);
 			}
 			else
 			{
@@ -196,4 +199,81 @@ void World::creaturesDieWithoutFood()
 			++carnIt;
 		}
 	}
+}
+
+
+//Creatures Reproduce
+void World::creaturesReproduce()
+{
+	//Carnivores
+	for (std::list<Carnivore*>::iterator carnIt = mListOfCarnivores.begin(); carnIt != mListOfCarnivores.end(); ++carnIt)
+	{
+		if (!(*carnIt)->getAbleToReproduce())
+		{
+			continue;
+		}
+		for (std::list<Carnivore*>::iterator carnIt2 = carnIt; carnIt2 != mListOfCarnivores.end(); ++carnIt2)
+		{
+			if (carnIt == carnIt2)
+			{
+				continue;
+			}
+			if (!(*carnIt2)->getAbleToReproduce())
+			{
+				continue;
+			}
+			if (mySFML::lengthOf((*carnIt)->getPosition() - (*carnIt2)->getPosition()) < ((*carnIt)->getRadius() + (*carnIt2)->getRadius()))
+			{
+				std::cout << "Carni Reproduce" << std::endl;
+				(*carnIt)->resetFertility();
+				(*carnIt2)->resetFertility();
+				mListOfCarnivores.push_back(new Carnivore(mySFML::meanVector((*carnIt)->getPosition(), (*carnIt2)->getPosition())));
+				break;
+			}
+		}
+	}
+
+	//Herbivores
+	for (std::list<Herbivore*>::iterator herbIt = mListOfHerbivores.begin(); herbIt != mListOfHerbivores.end(); ++herbIt)
+	{
+		if (!(*herbIt)->getAbleToReproduce())
+		{
+			continue;
+		}
+		for (std::list<Herbivore*>::iterator herbIt2 = herbIt; herbIt2 != mListOfHerbivores.end(); ++herbIt2)
+		{
+			if (herbIt == herbIt2)
+			{
+				continue;
+			}
+			if (!(*herbIt2)->getAbleToReproduce())
+			{
+				continue;
+			}
+			if (mySFML::lengthOf((*herbIt)->getPosition() - (*herbIt2)->getPosition()) < ((*herbIt)->getRadius() + (*herbIt2)->getRadius()))
+			{
+				std::cout << "Herbi Reproduce" << std::endl;
+				(*herbIt)->resetFertility();
+				(*herbIt2)->resetFertility();
+				mListOfHerbivores.push_back(new Herbivore(mySFML::meanVector((*herbIt)->getPosition(), (*herbIt2)->getPosition())));
+				break;
+			}
+		}
+	}
+}
+
+
+//Check for overlap
+bool World::checkForOverlap(Creature *creature1, Creature *creature2) const
+{
+	if (mySFML::lengthOf(creature1->getPosition() - creature2->getPosition()) < (creature1->getRadius() + creature2->getRadius()))
+	{
+		std::cout << "Overlap!!!" << std::endl;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+	
 }

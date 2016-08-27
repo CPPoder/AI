@@ -151,6 +151,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bar.hpp" />
     <ClInclude Include="Brain.hpp" />
     <ClInclude Include="Carnivore.hpp" />
     <ClInclude Include="Creature.hpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="World.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bar.cpp" />
     <ClCompile Include="Brain.cpp" />
     <ClCompile Include="Carnivore.cpp" />
     <ClCompile Include="Creature.cpp" />

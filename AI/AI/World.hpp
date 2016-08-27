@@ -26,7 +26,7 @@ private:
 	sf::Vector2f mWorldSize;
 
 	unsigned int const mNumOfFood = 40;
-	sf::Time mFoodSpawningTime = sf::seconds(2.f);
+	sf::Time mFoodSpawningTime = sf::seconds(0.5f);
 	sf::Time mTimeSinceLastFoodSpawn = sf::seconds(0.f);
 
 
@@ -39,10 +39,15 @@ public:
 	void render(sf::RenderWindow *renderWindow) override;
 	void handleEvents() override;
 
+
+private:
 	void herbiesEatFood();
 	void carniesEatHerbies();
 	void spawnFood(sf::Time frametime);
 	void creaturesDieWithoutFood();
+	void creaturesReproduce();
+
+	bool checkForOverlap(Creature *creature1, Creature *creature2) const;
 };
 
 
