@@ -11,11 +11,17 @@ class Creature : public Element
 private:
 	sf::CircleShape mCircleShape;
 
+	sf::RectangleShape mHealthBar;
+	sf::Vector2f mVecFromCircleToHealthBar = sf::Vector2f(-15.f, -20.f);
+	sf::Vector2f mSizeOfFullHealthBar = sf::Vector2f(30.f, 3.f);
+	sf::RectangleShape mLostHealthBar;
+
 	Brain *pBrain;
 
 	float mMass;
 	sf::Vector2f mVelocity;
 
+	float const mFullHealth = 100.f;
 	float mHealth = 90.f;
 	float mFertility = 0.f; //Ability of Reproduction
 	bool mAbleToReproduce = false;
