@@ -4,12 +4,12 @@
 
 
 Herbivore::Herbivore()
-	: Herbivore::Herbivore(sf::Vector2f(200.f, 200.f))
+	: Herbivore::Herbivore(sf::Vector2f(200.f, 200.f), new RandomBrain)
 {
 }
 
-Herbivore::Herbivore(sf::Vector2f position)
-	: Creature::Creature(position, sf::Color::Green, 10.f)
+Herbivore::Herbivore(sf::Vector2f position, Brain *brain)
+	: Creature::Creature(position, sf::Color::Green, 10.f, brain)
 {
 }
 

@@ -4,16 +4,16 @@
 
 
 Creature::Creature()
-	: Creature::Creature(sf::Vector2f(200.f, 200.f), sf::Color::Blue)
+	: Creature::Creature(sf::Vector2f(200.f, 200.f), sf::Color::Blue, new RandomBrain)
 {
 }
 
-Creature::Creature(sf::Vector2f position, sf::Color color)
-	: Creature::Creature(position, color, 10.f)
+Creature::Creature(sf::Vector2f position, sf::Color color, Brain *brain)
+	: Creature::Creature(position, color, 10.f, brain)
 {
 }
 
-Creature::Creature(sf::Vector2f position, sf::Color color, float size)
+Creature::Creature(sf::Vector2f position, sf::Color color, float size, Brain *brain)
 	: mMass(1.0f),
 	  mVelocity(0.f, 0.f),
 	  mBarSize(30.f, 3.f),
@@ -31,7 +31,7 @@ Creature::Creature(sf::Vector2f position, sf::Color color, float size)
 	mCircleShape.setPosition(position);
 	mCircleShape.setFillColor(color);
 
-	pBrain = new Brain;
+	pBrain = brain;
 }
 
 Creature::~Creature()

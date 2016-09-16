@@ -14,7 +14,7 @@ private:
 
 public:
 	Carnivore();
-	Carnivore(sf::Vector2f position);
+	Carnivore(sf::Vector2f position, Brain *brain);
 	~Carnivore() override;
 
 	//void update() override;

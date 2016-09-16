@@ -39,8 +39,8 @@ private:
 
 public:
 	Creature();
-	Creature(sf::Vector2f position, sf::Color color);
-	Creature(sf::Vector2f position, sf::Color color, float size);
+	Creature(sf::Vector2f position, sf::Color color, Brain *brain);
+	Creature(sf::Vector2f position, sf::Color color, float size, Brain *brain);
 	~Creature() override;
 
 	void update(sf::Time frametime) override;

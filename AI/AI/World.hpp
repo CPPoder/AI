@@ -19,14 +19,17 @@
 class World : public Element
 {
 private:
+	sf::RectangleShape mWorldBackground;
+
 	std::list<Carnivore*> mListOfCarnivores;
 	std::list<Herbivore*> mListOfHerbivores;
 	std::list<Food*> mListOfFood;
 
 	sf::Vector2f mWorldSize;
+	sf::Time mSimulationTime;
 
-	unsigned int const mNumOfFood = 40;
-	sf::Time mFoodSpawningTime = sf::seconds(0.5f);
+	unsigned int const mNumOfFood = 1000;
+	sf::Time mFoodSpawningTime = sf::seconds(0.02f);
 	sf::Time mTimeSinceLastFoodSpawn = sf::seconds(0.f);
 
 

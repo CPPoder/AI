@@ -17,6 +17,7 @@ private:
 	World *pWorld;
 
 	sf::Clock *pClock;
+	sf::Time mFrametime = sf::Time();
 
 	void handleEvents();
 	void update();

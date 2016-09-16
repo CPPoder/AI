@@ -10,16 +10,20 @@ World::World()
 World::World(sf::Vector2u worldSize)
 	: mWorldSize(static_cast<sf::Vector2f>(worldSize))
 {
-	unsigned int const numOfHerbies = 15;
-	unsigned int const numOfCarnies = 2;
+	mWorldBackground.setPosition(0.f, 0.f);
+	mWorldBackground.setSize(mWorldSize);
+	mWorldBackground.setFillColor(sf::Color::White);
+	
+	unsigned int const numOfHerbies = 100;
+	unsigned int const numOfCarnies = 5;
 
 	for (unsigned int i = 0; i < numOfHerbies; i++)
 	{
-		mListOfHerbivores.push_back(new Herbivore(sf::Vector2f(myMath::randIntervalf(0, static_cast<int>(mWorldSize.x)), myMath::randIntervalf(0, static_cast<int>(mWorldSize.y)))));
+		mListOfHerbivores.push_back(new Herbivore(sf::Vector2f(myMath::randIntervalf(0, static_cast<int>(mWorldSize.x)), myMath::randIntervalf(0, static_cast<int>(mWorldSize.y))), new RandomBrain));
 	}
 	for (unsigned int i = 0; i < numOfCarnies; i++)
 	{
-		mListOfCarnivores.push_back(new Carnivore(sf::Vector2f(myMath::randIntervalf(0, static_cast<int>(mWorldSize.x)), myMath::randIntervalf(0, static_cast<int>(mWorldSize.y)))));
+		mListOfCarnivores.push_back(new Carnivore(sf::Vector2f(myMath::randIntervalf(0, static_cast<int>(mWorldSize.x)), myMath::randIntervalf(0, static_cast<int>(mWorldSize.y))), new RandomBrain));
 	}
 	for (unsigned int i = 0; i < mNumOfFood; i++)
 	{
@@ -34,6 +38,9 @@ World::~World()
 
 void World::update(sf::Time frametime)
 {
+	//Add frametime to mSimulationTime
+	mSimulationTime = mSimulationTime + frametime;
+
 	//Update herbies and carnies
 	for (auto herb : mListOfHerbivores)
 	{
@@ -81,6 +88,7 @@ void World::update(sf::Time frametime)
 
 void World::render(sf::RenderWindow *renderWindow)
 {
+	renderWindow->draw(mWorldBackground);
 	for (auto food : mListOfFood)
 	{
 		food->render(renderWindow);
@@ -227,7 +235,7 @@ void World::creaturesReproduce()
 				std::cout << "Carni Reproduce" << std::endl;
 				(*carnIt)->resetFertility();
 				(*carnIt2)->resetFertility();
-				mListOfCarnivores.push_back(new Carnivore(mySFML::meanVector((*carnIt)->getPosition(), (*carnIt2)->getPosition())));
+				mListOfCarnivores.push_back(new Carnivore(mySFML::meanVector((*carnIt)->getPosition(), (*carnIt2)->getPosition()), new RandomBrain));
 				break;
 			}
 		}
@@ -255,7 +263,7 @@ void World::creaturesReproduce()
 				std::cout << "Herbi Reproduce" << std::endl;
 				(*herbIt)->resetFertility();
 				(*herbIt2)->resetFertility();
-				mListOfHerbivores.push_back(new Herbivore(mySFML::meanVector((*herbIt)->getPosition(), (*herbIt2)->getPosition())));
+				mListOfHerbivores.push_back(new Herbivore(mySFML::meanVector((*herbIt)->getPosition(), (*herbIt2)->getPosition()), new RandomBrain));
 				break;
 			}
 		}

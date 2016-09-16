@@ -14,7 +14,7 @@ private:
 
 public:
 	Herbivore();
-	Herbivore(sf::Vector2f position);
+	Herbivore(sf::Vector2f position, Brain *brain);
 	~Herbivore() override;
 
 	//void update() override;
