@@ -15,6 +15,7 @@ Creature::Creature(sf::Vector2f position, sf::Color color, Brain *brain)
 
 Creature::Creature(sf::Vector2f position, sf::Color color, float size, Brain *brain)
 	: mMass(1.0f),
+	  mMaximalForce(1000.f),
 	  mVelocity(0.f, 0.f),
 	  mBarSize(30.f, 3.f),
 	  mHealth(90.f),

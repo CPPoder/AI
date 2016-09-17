@@ -13,6 +13,7 @@ private:
 	Brain *pBrain;
 
 	float mMass;
+	float mMaximalForce;
 	sf::Vector2f mVelocity;
 
 	float const mFullHealth;
