@@ -19,11 +19,11 @@ World::World(sf::Vector2u worldSize)
 
 	for (unsigned int i = 0; i < numOfHerbies; i++)
 	{
-		mListOfHerbivores.push_back(new Herbivore(sf::Vector2f(myMath::randIntervalf(0, static_cast<int>(mWorldSize.x)), myMath::randIntervalf(0, static_cast<int>(mWorldSize.y))), new RandomBrain));
+		mListOfHerbivores.push_back(new Herbivore(sf::Vector2f(myMath::randIntervalf(0, static_cast<int>(mWorldSize.x)), myMath::randIntervalf(0, static_cast<int>(mWorldSize.y))), new USED_BRAIN));
 	}
 	for (unsigned int i = 0; i < numOfCarnies; i++)
 	{
-		mListOfCarnivores.push_back(new Carnivore(sf::Vector2f(myMath::randIntervalf(0, static_cast<int>(mWorldSize.x)), myMath::randIntervalf(0, static_cast<int>(mWorldSize.y))), new RandomBrain));
+		mListOfCarnivores.push_back(new Carnivore(sf::Vector2f(myMath::randIntervalf(0, static_cast<int>(mWorldSize.x)), myMath::randIntervalf(0, static_cast<int>(mWorldSize.y))), new USED_BRAIN));
 	}
 	for (unsigned int i = 0; i < mNumOfFood; i++)
 	{
@@ -40,6 +40,9 @@ void World::update(sf::Time frametime)
 {
 	//Add frametime to mSimulationTime
 	mSimulationTime = mSimulationTime + frametime;
+
+	//Calculate what Creatures see
+	calculateWhatCreaturesSee();
 
 	//Update herbies and carnies
 	for (auto herb : mListOfHerbivores)
@@ -106,6 +109,73 @@ void World::render(sf::RenderWindow *renderWindow)
 void World::handleEvents()
 {
 
+}
+
+
+//Calculate what Creatures see
+void World::calculateWhatCreaturesSee()
+{
+	for (auto herb : mListOfHerbivores)
+	{
+		if (mListOfCarnivores.empty())
+		{
+			herb->setInputFromSence(std::vector<bool>(8, true));
+		}
+		else
+		{
+			//Find smallest distance
+			sf::Vector2f herbPos = herb->getPosition();
+			sf::Vector2f distVec = mListOfCarnivores.front()->getPosition() - herbPos;
+			float distance = mySFML::lengthOf(distVec);
+			for (auto carn : mListOfCarnivores)
+			{
+				sf::Vector2f carnPos = carn->getPosition();
+				sf::Vector2f newDistVec = carnPos - herbPos;
+				float newDist = mySFML::lengthOf(newDistVec);
+				if (newDist < distance)
+				{
+					distVec = newDistVec;
+					distance = newDist;
+				}
+			}
+			
+			//Set Input With this Distance
+			float sensitiveDistance = 300.f;
+			unsigned int bitDepth = 4;
+			float distVecX = distVec.x;
+			float distVecY = distVec.y;
+
+			float largestComponent = myMath::max(distVecX * myMath::sign(distVecX), distVecY * myMath::sign(distVecY)); //Cuts out a square
+			float cuttingFactor = myMath::min((sensitiveDistance / largestComponent), 1.f);
+			float cuttedDistVecX = cuttingFactor * distVecX;
+			float cuttedDistVecY = cuttingFactor * distVecY;
+
+			std::function<unsigned int(float)> inputTrafo = myMath::createIntervalBasedAffineTrafo(-sensitiveDistance, sensitiveDistance, 0.f, static_cast<float>(myMath::intPow(2, bitDepth) - 1));
+			unsigned int UIinputX = static_cast<unsigned int>(inputTrafo(cuttedDistVecX) + 0.5);
+			unsigned int UIinputY = static_cast<unsigned int>(inputTrafo(cuttedDistVecY) + 0.5);
+
+			//std::cout << UIinputX << " " << UIinputY << std::endl;
+
+			std::vector<bool> boolVecX = myMath::trafoUintToBoolVectorOfGivenSize(UIinputX, bitDepth);
+			std::vector<bool> boolVecY = myMath::trafoUintToBoolVectorOfGivenSize(UIinputY, bitDepth);
+
+			std::vector<bool> input = boolVecX;
+			input.insert(input.end(), boolVecX.begin(), boolVecX.end());
+			herb->setInputFromSence(input);
+		}
+		
+	}
+
+
+	std::vector<bool> inputFromSence = { true, false, true, false, false, true, true, false };
+	/*for (auto herb : mListOfHerbivores)
+	{
+		herb->setInputFromSence(inputFromSence);
+	}*/
+	for (auto carn : mListOfCarnivores)
+	{
+		carn->setInputFromSence(inputFromSence);
+	}
 }
 
 
@@ -235,7 +305,7 @@ void World::creaturesReproduce()
 				std::cout << "Carni Reproduce" << std::endl;
 				(*carnIt)->resetFertility();
 				(*carnIt2)->resetFertility();
-				mListOfCarnivores.push_back(new Carnivore(mySFML::meanVector((*carnIt)->getPosition(), (*carnIt2)->getPosition()), new RandomBrain));
+				mListOfCarnivores.push_back(new Carnivore(mySFML::meanVector((*carnIt)->getPosition(), (*carnIt2)->getPosition()), new USED_BRAIN));
 				break;
 			}
 		}
@@ -263,7 +333,7 @@ void World::creaturesReproduce()
 				std::cout << "Herbi Reproduce" << std::endl;
 				(*herbIt)->resetFertility();
 				(*herbIt2)->resetFertility();
-				mListOfHerbivores.push_back(new Herbivore(mySFML::meanVector((*herbIt)->getPosition(), (*herbIt2)->getPosition()), new RandomBrain));
+				mListOfHerbivores.push_back(new Herbivore(mySFML::meanVector((*herbIt)->getPosition(), (*herbIt2)->getPosition()), new USED_BRAIN));
 				break;
 			}
 		}

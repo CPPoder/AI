@@ -27,7 +27,7 @@ Brain::~Brain()
 
 //DefaultConstructor
 RandomBrain::RandomBrain()
-	: RandomBrain::RandomBrain(1000.f)
+	: RandomBrain::RandomBrain(300.f)
 {
 }
 
@@ -69,7 +69,7 @@ sf::Vector2f RandomBrain::calculateWantedForce()
 
 //DefaultConstructor
 ListBrain::ListBrain()
-	: ListBrain::ListBrain(1000.f)
+	: ListBrain::ListBrain(300.f)
 {
 }
 
@@ -123,7 +123,8 @@ void ListBrain::setInputFromSence(std::vector<bool> input)
 	}
 	else
 	{
-		std::cout << "Error: ListBrain::setInputFromSence(std::vector<bool>) recognized wrong input vector size!" << std::endl;
+
+		std::cout << "Error: ListBrain::setInputFromSence(std::vector<bool>) recognized wrong input vector size! Namely: " << input.size() << std::endl;
 	}
 }
 

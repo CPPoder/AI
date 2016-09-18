@@ -45,8 +45,9 @@ Creature::~Creature()
 void Creature::update(sf::Time frametime)
 {
 	//Translation
+	pBrain->setInputFromSence(mInputFromSence);
 	sf::Vector2f wantedForce = pBrain->calculateWantedForce();
-	float const viscosity = 0.001f;
+	float const viscosity = 0.005f;
 	sf::Vector2f frictionForce = -6.f * 3.141592653f * viscosity * mCircleShape.getRadius() * mVelocity;
 	sf::Vector2f accelaration = (wantedForce + frictionForce) / mMass;
 	mVelocity = mVelocity + frametime.asSeconds() * accelaration;
@@ -112,6 +113,10 @@ void Creature::resetFertility()
 	mFertility = 0.f;
 	mAbleToReproduce = false;
 	mFertilityBar.setFillQuotient(0.f);
+}
+void Creature::setInputFromSence(std::vector<bool> inputFromSence)
+{
+	mInputFromSence = inputFromSence;
 }
 
 

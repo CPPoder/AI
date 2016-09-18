@@ -6,6 +6,8 @@
 #include "Brain.hpp"
 #include "Bar.hpp"
 
+#include <vector>
+
 
 class Creature : public Element
 {
@@ -36,6 +38,8 @@ private:
 	sf::Vector2f mVecFromCircleToFertilityBar;
 	Bar mFertilityBar;
 
+	std::vector<bool> mInputFromSence;
+
 
 
 public:
@@ -51,6 +55,7 @@ public:
 	void setPosition(sf::Vector2f position);
 	void addHealth(float health);
 	void resetFertility();
+	void setInputFromSence(std::vector<bool> inputFromSence);
 
 	sf::Vector2f getPosition() const;
 	float getRadius() const;

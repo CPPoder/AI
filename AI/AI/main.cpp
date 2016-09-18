@@ -9,7 +9,7 @@ int main()
 	Framework mFramework;
 	mFramework.run();
 
-	//std::getchar();
+	std::getchar();
     return 0;
 }
 

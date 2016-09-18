@@ -44,6 +44,7 @@ public:
 
 
 private:
+	void calculateWhatCreaturesSee();
 	void herbiesEatFood();
 	void carniesEatHerbies();
 	void spawnFood(sf::Time frametime);
@@ -52,6 +53,9 @@ private:
 
 	bool checkForOverlap(Creature *creature1, Creature *creature2) const;
 };
+
+//Define which Brain shall be used
+typedef ListBrain USED_BRAIN;
 
 
 

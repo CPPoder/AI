@@ -57,6 +57,8 @@ namespace myMath {
 	int intPow(int val, unsigned int exp);
 
 	unsigned int trafoBoolVectorToUInt(std::vector<bool> input);
+	std::vector<bool> trafoUintToBoolVector(unsigned int input);
+	std::vector<bool> trafoUintToBoolVectorOfGivenSize(unsigned int input, unsigned int size);
 
 	
 	template <typename T, typename S> S intervalBasedAffineTrafo(T domainBegin, T domainEnd, S imageBegin, S imageEnd, T input)
