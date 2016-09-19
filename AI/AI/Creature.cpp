@@ -136,3 +136,7 @@ bool Creature::getAbleToReproduce() const
 {
 	return mAbleToReproduce;
 }
+Brain* Creature::getBrainPointer() const
+{
+	return pBrain;
+}

@@ -11,6 +11,35 @@
 #include "myUsefulMath.hpp"
 
 
+//////////////////
+//Class: BrainType
+
+class BrainType
+{
+private:
+	unsigned int mTypeNum;
+
+public:
+	BrainType();
+	BrainType(BrainType const & brainType);
+	BrainType(unsigned int typeNum);
+	~BrainType();
+	BrainType& operator=(BrainType const & other);
+
+	static const BrainType BRAIN;
+	static const BrainType RANDOM_BRAIN;
+	static const BrainType LIST_BRAIN;
+
+	unsigned int getTypeNum() const;
+};
+
+bool operator==(BrainType type1, BrainType type2);
+
+
+
+
+
+
 //////////////
 //Class: Brain
 
@@ -18,6 +47,7 @@ class Brain
 {
 protected:
 	float mMaximalForce;
+	BrainType mBrainType;
 
 public:
 	Brain();
@@ -27,7 +57,11 @@ public:
 	virtual sf::Vector2f calculateWantedForce() = 0;
 	//virtual void mutate(); //Maybe Parameter
 
+	BrainType getBrainType() const;
+
 };
+
+
 
 
 
@@ -49,6 +83,8 @@ public:
 
 
 
+
+
 //////////////////
 //Class: ListBrain
 
@@ -63,15 +99,35 @@ private:
 	std::function<float(int)> mOutputDAConversionTrafo;
 
 public:
-	ListBrain();
-	ListBrain(float maximalForce);
+	ListBrain(bool createVectorOfOutputs = true);
+	ListBrain(float maximalForce, bool createVectorOfOutputs = true);
+	/*
+	ListBrain(std::vector<std::vector<bool>> vectorOfOutputs);
+	ListBrain(std::vector<std::vector<bool>> vectorOfOutputs, float maximalForce);
+	*/
 	~ListBrain() override;
 
 	void setInputFromSence(std::vector<bool> input) override;
 	sf::Vector2f calculateWantedForce() override;
 
+	void setVectorOfOutputs(std::vector<std::vector<bool>> const & vectorOfOutputs);
+
+	std::vector<std::vector<bool>>* getVectorOfOutputsPointer();
+
 
 };
+
+
+
+
+
+
+//////////////////
+//Public Functions
+
+RandomBrain* createNewRandomBrainForReproduction(RandomBrain *brain1, RandomBrain *brain2);
+
+ListBrain* createNewListBrainForReproduction(ListBrain *brain1, ListBrain *brain2);
 
 
 

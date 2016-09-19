@@ -2,12 +2,59 @@
 #include "Brain.hpp"
 
 
+//////////////////
+//Class: BrainType
+
+BrainType::BrainType()
+{
+}
+
+BrainType::BrainType(BrainType const & brainType)
+	: mTypeNum(brainType.mTypeNum)
+{
+}
+
+BrainType::BrainType(unsigned int typeNum)
+	: mTypeNum(typeNum)
+{
+}
+
+BrainType::~BrainType()
+{
+}
+
+BrainType& BrainType::operator=(BrainType const & other)
+{
+	mTypeNum = other.mTypeNum;
+	return *this;
+}
+
+unsigned int BrainType::getTypeNum() const
+{
+	return mTypeNum;
+}
+
+const BrainType BrainType::BRAIN = BrainType(0);
+const BrainType BrainType::RANDOM_BRAIN = BrainType(1);
+const BrainType BrainType::LIST_BRAIN = BrainType(2);
+
+bool operator==(BrainType type1, BrainType type2)
+{
+	return (type1.getTypeNum() == type2.getTypeNum());
+}
+
+
+
+
+
+
 
 ///////////////////////
 //Implementation: Brain
 
 //DefaultConstructor
 Brain::Brain()
+	: mBrainType(BrainType::BRAIN)
 {
 }
 
@@ -16,7 +63,11 @@ Brain::~Brain()
 {
 }
 
-
+//Get BrainType
+BrainType Brain::getBrainType() const
+{
+	return mBrainType;
+}
 
 
 
@@ -35,6 +86,7 @@ RandomBrain::RandomBrain()
 RandomBrain::RandomBrain(float maximalForce)
 {
 	mMaximalForce = maximalForce;
+	mBrainType = BrainType::RANDOM_BRAIN;
 }
 
 //Destructor
@@ -68,45 +120,77 @@ sf::Vector2f RandomBrain::calculateWantedForce()
 //Implementation: ListBrain
 
 //DefaultConstructor
-ListBrain::ListBrain()
-	: ListBrain::ListBrain(300.f)
+ListBrain::ListBrain(bool createVectorOfOutputs)
+	: ListBrain::ListBrain(300.f, createVectorOfOutputs)
 {
 }
 
 //Constructor
-ListBrain::ListBrain(float maximalForce)
+ListBrain::ListBrain(float maximalForce, bool createVectorOfOutputs)
 {
 	//Set mMaximalForce
 	mMaximalForce = maximalForce;
 
+	//Set BrainType
+	mBrainType = BrainType::LIST_BRAIN;
+
 	//Initialize mVectorOfOutputs
 	mBitDepth = 4;
 	mNumberOfPossibleOutputs = 256; //2^(4*2)
-
-	for (unsigned int outputNum = 0; outputNum < mNumberOfPossibleOutputs; outputNum++)
+	if (createVectorOfOutputs)
 	{
-		std::vector<bool> output;
-		for (unsigned int outputBit = 0; outputBit < 8; outputBit++)
+		for (unsigned int outputNum = 0; outputNum < mNumberOfPossibleOutputs; outputNum++)
 		{
-			output.push_back(myMath::randBool());
+			std::vector<bool> output;
+			for (unsigned int outputBit = 0; outputBit < 8; outputBit++)
+			{
+				output.push_back(myMath::randBool());
+			}
+			output.shrink_to_fit();
+			mVectorOfOutputs.push_back(output);
 		}
-		output.shrink_to_fit();
-		mVectorOfOutputs.push_back(output);
+		mVectorOfOutputs.shrink_to_fit();
 	}
-	mVectorOfOutputs.shrink_to_fit();
+	
 
 
 	//Initialize mInputFromSence
 	for (unsigned int inputBit = 0; inputBit < 8; inputBit++)
 	{
-		mInputFromSence.push_back(0);
+		mInputFromSence.push_back(false);
 	}
 	mInputFromSence.shrink_to_fit();
 
-	//Initialize mOutputDAConvertationTrafo
+	//Initialize mOutputDAConversionTrafo
 	mOutputDAConversionTrafo = myMath::createIntervalBasedAffineTrafo(0, 15, -mMaximalForce, maximalForce);
 	
 }
+/*
+ListBrain::ListBrain(std::vector<std::vector<bool>> vectorOfOutputs)
+	: ListBrain::ListBrain(vectorOfOutputs, 300.f)
+{
+}
+
+ListBrain::ListBrain(std::vector<std::vector<bool>> vectorOfOutputs, float maximalForce)
+{
+	//Set mMaximalForce
+	mMaximalForce = maximalForce;
+
+	//Initialize mVectorOfOutputs
+	mVectorOfOutputs = vectorOfOutputs;
+
+
+	//Initialize mInputFromSence
+	for (unsigned int inputBit = 0; inputBit < 8; inputBit++)
+	{
+		mInputFromSence.push_back(false);
+	}
+	mInputFromSence.shrink_to_fit();
+
+	//Initialize mOutputDAConversionTrafo
+	mOutputDAConversionTrafo = myMath::createIntervalBasedAffineTrafo(0, 15, -mMaximalForce, maximalForce);
+}
+*/
 
 //Destructor
 ListBrain::~ListBrain()
@@ -154,4 +238,64 @@ sf::Vector2f ListBrain::calculateWantedForce()
 	float yForce = mOutputDAConversionTrafo(yInt);
 
 	return sf::Vector2f(xForce, yForce);
+}
+
+//Set Vector of Outputs
+void ListBrain::setVectorOfOutputs(std::vector<std::vector<bool>> const & vectorOfOutputs)
+{
+	mVectorOfOutputs = vectorOfOutputs;
+}
+
+std::vector<std::vector<bool>>* ListBrain::getVectorOfOutputsPointer()
+{
+	return &mVectorOfOutputs;
+}
+
+
+
+
+
+
+
+//////////////////
+//Public Functions
+
+RandomBrain* createNewRandomBrainForReproduction(RandomBrain *brain1, RandomBrain *brain2)
+{
+	return new RandomBrain;
+}
+
+ListBrain* createNewListBrainForReproduction(ListBrain *brain1, ListBrain *brain2)
+{
+	//Check Sizes of VectorsOfOutputs
+	std::vector<std::vector<bool>>* vectorOfOutputs1 = brain1->getVectorOfOutputsPointer();
+	std::vector<std::vector<bool>>* vectorOfOutputs2 = brain2->getVectorOfOutputsPointer();
+	unsigned int numOfOut1 = vectorOfOutputs1->size();
+	unsigned int numOfOut2 = vectorOfOutputs2->size();
+	unsigned int numOfIn1 = vectorOfOutputs1->at(0).size();
+	unsigned int numOfIn2 = vectorOfOutputs2->at(0).size();
+	if ((numOfOut1 != numOfOut2) || (numOfIn1 != numOfIn2))
+	{
+		std::cout << "Error: createNewBrainForReproduction(ListBrain*, ListBrain*) : The two input ListBrains are not compatible!" << std::endl;
+		throw std::bad_exception();
+	}
+
+	//Mix the vectorsOfOutputs
+	std::vector<std::vector<bool>> newVecOfOutputs = *vectorOfOutputs1;
+	for (unsigned int i = 0; i < numOfOut1; i++)
+	{
+		for (unsigned int j = 0; j < numOfIn1; j++)
+		{
+			bool changeVal = myMath::randBool();
+			if (changeVal)
+			{
+				newVecOfOutputs.at(i).at(j) = vectorOfOutputs2->at(i).at(j);
+			}
+		}
+	}
+
+	//Create new Brain and return Pointer
+	ListBrain *listBrain = new ListBrain(false);
+	listBrain->setVectorOfOutputs(newVecOfOutputs);
+	return listBrain;
 }

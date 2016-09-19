@@ -61,6 +61,7 @@ public:
 	float getRadius() const;
 	bool getHasDied() const;
 	bool getAbleToReproduce() const;
+	Brain* getBrainPointer() const;
 
 
 

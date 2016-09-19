@@ -12,7 +12,7 @@ World::World(sf::Vector2u worldSize)
 {
 	mWorldBackground.setPosition(0.f, 0.f);
 	mWorldBackground.setSize(mWorldSize);
-	mWorldBackground.setFillColor(sf::Color::White);
+	mWorldBackground.setFillColor(sf::Color(60, 60, 60));
 	
 	unsigned int const numOfHerbies = 100;
 	unsigned int const numOfCarnies = 5;
@@ -115,6 +115,7 @@ void World::handleEvents()
 //Calculate what Creatures see
 void World::calculateWhatCreaturesSee()
 {
+	//What Herbies See
 	for (auto herb : mListOfHerbivores)
 	{
 		if (mListOfCarnivores.empty())
@@ -154,8 +155,6 @@ void World::calculateWhatCreaturesSee()
 			unsigned int UIinputX = static_cast<unsigned int>(inputTrafo(cuttedDistVecX) + 0.5);
 			unsigned int UIinputY = static_cast<unsigned int>(inputTrafo(cuttedDistVecY) + 0.5);
 
-			//std::cout << UIinputX << " " << UIinputY << std::endl;
-
 			std::vector<bool> boolVecX = myMath::trafoUintToBoolVectorOfGivenSize(UIinputX, bitDepth);
 			std::vector<bool> boolVecY = myMath::trafoUintToBoolVectorOfGivenSize(UIinputY, bitDepth);
 
@@ -163,19 +162,69 @@ void World::calculateWhatCreaturesSee()
 			input.insert(input.end(), boolVecX.begin(), boolVecX.end());
 			herb->setInputFromSence(input);
 		}
-		
 	}
 
 
+	//What Carnies See
+	for (auto carn : mListOfCarnivores)
+	{
+		if (mListOfHerbivores.empty())
+		{
+			carn->setInputFromSence(std::vector<bool>(8, true));
+		}
+		else
+		{
+			//Find smallest distance
+			sf::Vector2f carnPos = carn->getPosition();
+			sf::Vector2f distVec = mListOfHerbivores.front()->getPosition() - carnPos;
+			float distance = mySFML::lengthOf(distVec);
+			for (auto herb : mListOfHerbivores)
+			{
+				sf::Vector2f herbPos = herb->getPosition();
+				sf::Vector2f newDistVec = herbPos - carnPos;
+				float newDist = mySFML::lengthOf(newDistVec);
+				if (newDist < distance)
+				{
+					distVec = newDistVec;
+					distance = newDist;
+				}
+			}
+
+			//Set Input With this Distance
+			float sensitiveDistance = 300.f;
+			unsigned int bitDepth = 4;
+			float distVecX = distVec.x;
+			float distVecY = distVec.y;
+
+			float largestComponent = myMath::max(distVecX * myMath::sign(distVecX), distVecY * myMath::sign(distVecY)); //Cuts out a square
+			float cuttingFactor = myMath::min((sensitiveDistance / largestComponent), 1.f);
+			float cuttedDistVecX = cuttingFactor * distVecX;
+			float cuttedDistVecY = cuttingFactor * distVecY;
+
+			std::function<unsigned int(float)> inputTrafo = myMath::createIntervalBasedAffineTrafo(-sensitiveDistance, sensitiveDistance, 0.f, static_cast<float>(myMath::intPow(2, bitDepth) - 1));
+			unsigned int UIinputX = static_cast<unsigned int>(inputTrafo(cuttedDistVecX) + 0.5);
+			unsigned int UIinputY = static_cast<unsigned int>(inputTrafo(cuttedDistVecY) + 0.5);
+
+			std::vector<bool> boolVecX = myMath::trafoUintToBoolVectorOfGivenSize(UIinputX, bitDepth);
+			std::vector<bool> boolVecY = myMath::trafoUintToBoolVectorOfGivenSize(UIinputY, bitDepth);
+
+			std::vector<bool> input = boolVecX;
+			input.insert(input.end(), boolVecX.begin(), boolVecX.end());
+			carn->setInputFromSence(input);
+		}
+	}
+
+	/*
 	std::vector<bool> inputFromSence = { true, false, true, false, false, true, true, false };
-	/*for (auto herb : mListOfHerbivores)
+	for (auto herb : mListOfHerbivores)
 	{
 		herb->setInputFromSence(inputFromSence);
-	}*/
+	}
 	for (auto carn : mListOfCarnivores)
 	{
 		carn->setInputFromSence(inputFromSence);
 	}
+	*/
 }
 
 
@@ -305,11 +354,34 @@ void World::creaturesReproduce()
 				std::cout << "Carni Reproduce" << std::endl;
 				(*carnIt)->resetFertility();
 				(*carnIt2)->resetFertility();
-				mListOfCarnivores.push_back(new Carnivore(mySFML::meanVector((*carnIt)->getPosition(), (*carnIt2)->getPosition()), new USED_BRAIN));
+				if ((*carnIt)->getBrainPointer()->getBrainType() == BrainType::RANDOM_BRAIN)
+				{
+					RandomBrain *p1 = dynamic_cast<RandomBrain*>((*carnIt)->getBrainPointer());
+					RandomBrain *p2 = dynamic_cast<RandomBrain*>((*carnIt2)->getBrainPointer());
+					if ((p1 == nullptr) || (p2 == nullptr))
+					{
+						std::cout << "Error: World::creaturesReproduce() : dynamic_cast<RandomBrain*> gone wrong!" << std::endl;
+						throw std::bad_exception();
+					}
+					mListOfCarnivores.push_back(new Carnivore(mySFML::meanVector((*carnIt)->getPosition(), (*carnIt2)->getPosition()), createNewRandomBrainForReproduction(p1, p2)));
+				}
+				if ((*carnIt)->getBrainPointer()->getBrainType() == BrainType::LIST_BRAIN)
+				{
+					ListBrain *p1 = dynamic_cast<ListBrain*>((*carnIt)->getBrainPointer());
+					ListBrain *p2 = dynamic_cast<ListBrain*>((*carnIt2)->getBrainPointer());
+					if ((p1 == nullptr) || (p2 == nullptr))
+					{
+						std::cout << "Error: World::creaturesReproduce() : dynamic_cast<ListBrain*> gone wrong!" << std::endl;
+						throw std::bad_exception();
+					}
+					mListOfCarnivores.push_back(new Carnivore(mySFML::meanVector((*carnIt)->getPosition(), (*carnIt2)->getPosition()), createNewListBrainForReproduction(p1, p2)));
+				}
 				break;
 			}
 		}
 	}
+
+
 
 	//Herbivores
 	for (std::list<Herbivore*>::iterator herbIt = mListOfHerbivores.begin(); herbIt != mListOfHerbivores.end(); ++herbIt)
@@ -333,7 +405,28 @@ void World::creaturesReproduce()
 				std::cout << "Herbi Reproduce" << std::endl;
 				(*herbIt)->resetFertility();
 				(*herbIt2)->resetFertility();
-				mListOfHerbivores.push_back(new Herbivore(mySFML::meanVector((*herbIt)->getPosition(), (*herbIt2)->getPosition()), new USED_BRAIN));
+				if ((*herbIt)->getBrainPointer()->getBrainType() == BrainType::RANDOM_BRAIN)
+				{
+					RandomBrain *p1 = dynamic_cast<RandomBrain*>((*herbIt)->getBrainPointer());
+					RandomBrain *p2 = dynamic_cast<RandomBrain*>((*herbIt2)->getBrainPointer());
+					if ((p1 == nullptr) || (p2 == nullptr))
+					{
+						std::cout << "Error: World::creaturesReproduce() : dynamic_cast<RandomBrain*> gone wrong!" << std::endl;
+						throw std::bad_exception();
+					}
+					mListOfHerbivores.push_back(new Herbivore(mySFML::meanVector((*herbIt)->getPosition(), (*herbIt2)->getPosition()), createNewRandomBrainForReproduction(p1, p2)));
+				}
+				if ((*herbIt)->getBrainPointer()->getBrainType() == BrainType::LIST_BRAIN)
+				{
+					ListBrain *p1 = dynamic_cast<ListBrain*>((*herbIt)->getBrainPointer());
+					ListBrain *p2 = dynamic_cast<ListBrain*>((*herbIt2)->getBrainPointer());
+					if ((p1 == nullptr) || (p2 == nullptr))
+					{
+						std::cout << "Error: World::creaturesReproduce() : dynamic_cast<ListBrain*> gone wrong!" << std::endl;
+						throw std::bad_exception();
+					}
+					mListOfHerbivores.push_back(new Herbivore(mySFML::meanVector((*herbIt)->getPosition(), (*herbIt2)->getPosition()), createNewListBrainForReproduction(p1, p2)));
+				}
 				break;
 			}
 		}
