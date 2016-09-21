@@ -14,10 +14,17 @@ class Framework
 private:
 	sf::RenderWindow *pRenderWindow;
 
+	sf::Font *pArialFont;
+
 	World *pWorld;
+	sf::Text *pTextFPS;
+	sf::Text *pTextTimeFactor;
 
 	sf::Clock *pClock;
 	sf::Time mFrametime = sf::Time();
+	sf::Time mFPSTime;
+	unsigned int mFPSCounter;
+	float mTimeFactor;
 
 	void handleEvents();
 	void update();

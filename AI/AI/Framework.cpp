@@ -6,6 +6,11 @@ Framework::Framework()
 {
 	srand(time(0));
 
+	mTimeFactor = 1.f;
+
+	pArialFont = new sf::Font;
+	pArialFont->loadFromFile("Fonts/arial.ttf");
+
 	sf::Vector2u windowSize(1650, 950);
 	sf::Vector2u worldSize(3000, 3000);
 	pRenderWindow = new sf::RenderWindow(sf::VideoMode(windowSize.x, windowSize.y), "Artificial Intelligence");
@@ -13,8 +18,15 @@ Framework::Framework()
 	pRenderWindow->setView(sf::View(sf::FloatRect(sf::Vector2f(0.f, 0.f), static_cast<sf::Vector2f>(windowSize))));
 	pWorld = new World(worldSize);
 
+	pTextFPS = new sf::Text("", *pArialFont, 20);
+	pTextFPS->setPosition(5.f, 5.f);
+
+	pTextTimeFactor = new sf::Text("TimeFactor: " + std::to_string(mTimeFactor), *pArialFont, 20);
+	pTextTimeFactor->setPosition(5.f, 30.f);
+
 	pClock = new sf::Clock;
 	pClock->restart();
+	mFPSTime = sf::Time::Zero;
 }
 
 //Destructor
@@ -47,16 +59,40 @@ void Framework::handleEvents()
 
 void Framework::update()
 {
-	//Adjusting timeFactor
-	float timeFactor = 1.f;
+	//Measuring Frametime
+	mFrametime = pClock->restart();
+
+	//Adjusting mTimeFactor
+	float const adjustingTFConstant = 10.01f;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Add))
+	{
+		mTimeFactor = mTimeFactor * pow(adjustingTFConstant, mFrametime.asSeconds());
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Subtract))
+	{
+		mTimeFactor = mTimeFactor * pow(1 / adjustingTFConstant, mFrametime.asSeconds());
+	}
+	pTextTimeFactor->setString("TimeFactor: " + std::to_string(mTimeFactor));
+
+	//Adjusting usedTimeFactor
+	float usedTimeFactor = mTimeFactor;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P))
 	{
-		timeFactor = 0.f;
+		usedTimeFactor = 0.f;
+	}
+	
+	//Determining FPS
+	mFPSTime = mFPSTime + mFrametime;
+	mFPSCounter = mFPSCounter + 1;
+	if (mFPSTime.asSeconds() > 1.f)
+	{
+		mFPSTime = sf::Time::Zero;
+		pTextFPS->setString("FPS: " + std::to_string(mFPSCounter));
+		mFPSCounter = 0;
 	}
 
 	//Updating the world
-	mFrametime = pClock->restart();
-	pWorld->update(timeFactor * mFrametime);
+	pWorld->update(usedTimeFactor * mFrametime);
 
 
 	//Change View
@@ -117,7 +153,17 @@ void Framework::update()
 void Framework::render()
 {
 	pRenderWindow->clear();
+
+	//Render World
 	pWorld->render(pRenderWindow);
+
+	//Render DefaultViewThings
+	sf::View currView = pRenderWindow->getView();
+	pRenderWindow->setView(pRenderWindow->getDefaultView());
+	pRenderWindow->draw(*pTextFPS);
+	pRenderWindow->draw(*pTextTimeFactor);
+	pRenderWindow->setView(currView);
+
 	pRenderWindow->display();
 }
 
