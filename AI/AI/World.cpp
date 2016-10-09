@@ -33,7 +33,18 @@ World::World(sf::Vector2u worldSize)
 
 World::~World()
 {
-
+	for (auto food : mListOfFood)
+	{
+		delete food;
+	}
+	for (auto herb : mListOfHerbivores)
+	{
+		delete herb;
+	}
+	for (auto carn : mListOfCarnivores)
+	{
+		delete carn;
+	}
 }
 
 void World::update(sf::Time frametime)
@@ -241,6 +252,7 @@ void World::herbiesEatFood()
 			float foodRad = (*foodIt)->getRadius();
 			if (mySFML::lengthOf(foodPos - herbPos) < (foodRad + herbRad))
 			{
+				delete (*foodIt);
 				foodIt = mListOfFood.erase(foodIt);
 				(*herbIt)->addHealth(10.f);
 			}
@@ -265,6 +277,7 @@ void World::carniesEatHerbies()
 			float herbRad = (*herbIt)->getRadius();
 			if (mySFML::lengthOf(herbPos - carnPos) < (herbRad + carnRad))
 			{
+				delete (*herbIt);
 				herbIt = mListOfHerbivores.erase(herbIt);
 				(*carnIt)->addHealth(50.f);
 			}
@@ -308,6 +321,7 @@ void World::creaturesDieWithoutFood()
 	{
 		if ((*herbIt)->getHasDied())
 		{
+			delete (*herbIt);
 			herbIt = mListOfHerbivores.erase(herbIt);
 		}
 		else
@@ -319,6 +333,7 @@ void World::creaturesDieWithoutFood()
 	{
 		if ((*carnIt)->getHasDied())
 		{
+			delete (*carnIt);
 			carnIt = mListOfCarnivores.erase(carnIt);
 		}
 		else
