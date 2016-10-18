@@ -16,7 +16,7 @@ Framework::Framework()
 	pRenderWindow = new sf::RenderWindow(sf::VideoMode(windowSize.x, windowSize.y), "Artificial Intelligence");
 	pRenderWindow->setPosition(sf::Vector2i(10, 10));
 	pRenderWindow->setView(sf::View(sf::FloatRect(sf::Vector2f(0.f, 0.f), static_cast<sf::Vector2f>(windowSize))));
-	pWorld = new World(worldSize);
+	pWorld = new World(worldSize, pArialFont);
 
 	pTextFPS = new sf::Text("", *pArialFont, 20);
 	pTextFPS->setPosition(5.f, 5.f);
@@ -53,6 +53,13 @@ void Framework::handleEvents()
 		if (mEvent.type == sf::Event::EventType::Closed)
 		{
 			pRenderWindow->close();
+		}
+		if (mEvent.type == sf::Event::EventType::KeyReleased)
+		{
+			if (mEvent.key.code == sf::Keyboard::Return)
+			{
+				pRenderWindow->close();
+			}
 		}
 	}
 }

@@ -11,6 +11,7 @@
 #include "Herbivore.hpp"
 #include "Carnivore.hpp"
 #include "Food.hpp"
+#include "Window.hpp"
 
 #include "myUsefulMath.hpp"
 
@@ -19,6 +20,8 @@
 class World : public Element
 {
 private:
+	sf::Font *pFont;
+
 	sf::RectangleShape mWorldBackground;
 
 	std::list<Carnivore*> mListOfCarnivores;
@@ -32,10 +35,12 @@ private:
 	sf::Time mFoodSpawningTime = sf::seconds(0.02f);
 	sf::Time mTimeSinceLastFoodSpawn = sf::seconds(0.f);
 
+	Window *pWindow = nullptr;
+
 
 public:
 	World();
-	World(sf::Vector2u worldSize);
+	World(sf::Vector2u worldSize, sf::Font* font);
 	~World() override;
 
 	void update(sf::Time frametime) override;

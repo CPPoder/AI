@@ -57,6 +57,9 @@
     <ClInclude Include="Bar.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Window.hpp">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -96,6 +99,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Bar.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

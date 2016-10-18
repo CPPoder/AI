@@ -3,12 +3,13 @@
 
 
 World::World()
-	: World::World(sf::Vector2u(800, 800))
+	: World::World(sf::Vector2u(800, 800), nullptr)
 {
 }
 
-World::World(sf::Vector2u worldSize)
-	: mWorldSize(static_cast<sf::Vector2f>(worldSize))
+World::World(sf::Vector2u worldSize, sf::Font *font)
+	: mWorldSize(static_cast<sf::Vector2f>(worldSize)),
+	  pFont(font)
 {
 	mWorldBackground.setPosition(0.f, 0.f);
 	mWorldBackground.setSize(mWorldSize);
@@ -29,6 +30,8 @@ World::World(sf::Vector2u worldSize)
 	{
 		mListOfFood.push_back(new Food(sf::Vector2f(myMath::randIntervalf(0, static_cast<int>(mWorldSize.x)), myMath::randIntervalf(0, static_cast<int>(mWorldSize.y)))));
 	}
+
+	pWindow = new Window(pFont);
 }
 
 World::~World()
@@ -45,6 +48,9 @@ World::~World()
 	{
 		delete carn;
 	}
+
+	delete pWindow;
+	pWindow = nullptr;
 }
 
 void World::update(sf::Time frametime)
@@ -115,6 +121,8 @@ void World::render(sf::RenderWindow *renderWindow)
 	{
 		carn->render(renderWindow);
 	}
+
+	pWindow->render(renderWindow);
 }
 
 void World::handleEvents()
