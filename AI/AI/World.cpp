@@ -137,12 +137,14 @@ void World::calculateWhatCreaturesSee()
 		{
 			//Find smallest distance
 			sf::Vector2f herbPos = herb->getPosition();
-			sf::Vector2f distVec = mListOfCarnivores.front()->getPosition() - herbPos;
+			//sf::Vector2f distVec = mListOfCarnivores.front()->getPosition() - herbPos;
+			sf::Vector2f distVec = periodicDistance(herbPos, mListOfCarnivores.front()->getPosition());
 			float distance = mySFML::lengthOf(distVec);
 			for (auto carn : mListOfCarnivores)
 			{
 				sf::Vector2f carnPos = carn->getPosition();
-				sf::Vector2f newDistVec = carnPos - herbPos;
+				//sf::Vector2f newDistVec = carnPos - herbPos;
+				sf::Vector2f newDistVec = periodicDistance(herbPos, carnPos);
 				float newDist = mySFML::lengthOf(newDistVec);
 				if (newDist < distance)
 				{
@@ -187,12 +189,14 @@ void World::calculateWhatCreaturesSee()
 		{
 			//Find smallest distance
 			sf::Vector2f carnPos = carn->getPosition();
-			sf::Vector2f distVec = mListOfHerbivores.front()->getPosition() - carnPos;
+			//sf::Vector2f distVec = mListOfHerbivores.front()->getPosition() - carnPos;
+			sf::Vector2f distVec = periodicDistance(carnPos, mListOfHerbivores.front()->getPosition());
 			float distance = mySFML::lengthOf(distVec);
 			for (auto herb : mListOfHerbivores)
 			{
 				sf::Vector2f herbPos = herb->getPosition();
-				sf::Vector2f newDistVec = herbPos - carnPos;
+				//sf::Vector2f newDistVec = herbPos - carnPos;
+				sf::Vector2f newDistVec = periodicDistance(carnPos, herbPos);
 				float newDist = mySFML::lengthOf(newDistVec);
 				if (newDist < distance)
 				{
@@ -250,7 +254,8 @@ void World::herbiesEatFood()
 		{
 			sf::Vector2f foodPos = (*foodIt)->getPosition();
 			float foodRad = (*foodIt)->getRadius();
-			if (mySFML::lengthOf(foodPos - herbPos) < (foodRad + herbRad))
+			//if (mySFML::lengthOf(foodPos - herbPos) < (foodRad + herbRad))
+			if (mySFML::lengthOf(periodicDistance(herbPos, foodPos)) < (foodRad + herbRad))
 			{
 				delete (*foodIt);
 				foodIt = mListOfFood.erase(foodIt);
@@ -275,7 +280,8 @@ void World::carniesEatHerbies()
 		{
 			sf::Vector2f herbPos = (*herbIt)->getPosition();
 			float herbRad = (*herbIt)->getRadius();
-			if (mySFML::lengthOf(herbPos - carnPos) < (herbRad + carnRad))
+			//if (mySFML::lengthOf(herbPos - carnPos) < (herbRad + carnRad))
+			if (mySFML::lengthOf(periodicDistance(carnPos, herbPos)) < (herbRad + carnRad))
 			{
 				delete (*herbIt);
 				herbIt = mListOfHerbivores.erase(herbIt);
@@ -364,7 +370,8 @@ void World::creaturesReproduce()
 			{
 				continue;
 			}
-			if (mySFML::lengthOf((*carnIt)->getPosition() - (*carnIt2)->getPosition()) < ((*carnIt)->getRadius() + (*carnIt2)->getRadius()))
+			//if (mySFML::lengthOf((*carnIt)->getPosition() - (*carnIt2)->getPosition()) < ((*carnIt)->getRadius() + (*carnIt2)->getRadius()))
+			if (mySFML::lengthOf(periodicDistance((*carnIt2)->getPosition(), (*carnIt)->getPosition())) < ((*carnIt)->getRadius() + (*carnIt2)->getRadius()))
 			{
 				std::cout << "Carni Reproduce" << std::endl;
 				(*carnIt)->resetFertility();
@@ -415,7 +422,8 @@ void World::creaturesReproduce()
 			{
 				continue;
 			}
-			if (mySFML::lengthOf((*herbIt)->getPosition() - (*herbIt2)->getPosition()) < ((*herbIt)->getRadius() + (*herbIt2)->getRadius()))
+			//if (mySFML::lengthOf((*herbIt)->getPosition() - (*herbIt2)->getPosition()) < ((*herbIt)->getRadius() + (*herbIt2)->getRadius()))
+			if (mySFML::lengthOf(periodicDistance((*herbIt2)->getPosition(), (*herbIt)->getPosition())) < ((*herbIt)->getRadius() + (*herbIt2)->getRadius()))
 			{
 				std::cout << "Herbi Reproduce" << std::endl;
 				(*herbIt)->resetFertility();
@@ -449,7 +457,37 @@ void World::creaturesReproduce()
 }
 
 
-//Check for overlap
+//Calculate distance in periodic boundary conditions
+sf::Vector2f World::periodicDistance(sf::Vector2f creature1Pos, sf::Vector2f creature2Pos) const
+{
+	sf::Vector2f distVec = creature2Pos - creature1Pos;
+
+	float distX = distVec.x;
+	if (distX > (mWorldSize.x / 2.f))
+	{
+		distX = distX - mWorldSize.x;
+	}
+	else if (distX < -(mWorldSize.x / 2.f))
+	{
+		distX = distX + mWorldSize.x;
+	}
+
+	float distY = distVec.y;
+	if (distY > (mWorldSize.y / 2.f))
+	{
+		distY = distY - mWorldSize.y;
+	}
+	else if (distY < -(mWorldSize.y / 2.f))
+	{
+		distY = distY + mWorldSize.y;
+	}
+
+	return sf::Vector2f(distX, distY);
+}
+
+
+
+//Check for overlap (Does maybe not work right, if one creatures are at opposite sides)
 bool World::checkForOverlap(Creature *creature1, Creature *creature2) const
 {
 	if (mySFML::lengthOf(creature1->getPosition() - creature2->getPosition()) < (creature1->getRadius() + creature2->getRadius()))

@@ -51,6 +51,7 @@ private:
 	void creaturesDieWithoutFood();
 	void creaturesReproduce();
 
+	sf::Vector2f periodicDistance(sf::Vector2f creature1Pos, sf::Vector2f creature2Pos) const;
 	bool checkForOverlap(Creature *creature1, Creature *creature2) const;
 };
 
