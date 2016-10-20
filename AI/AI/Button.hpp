@@ -4,7 +4,10 @@
 
 #include "Element.hpp"
 
+#include "mySFMLVectorFunctions.hpp"
+
 #include "SFML\Graphics.hpp"
+#include "myUsefulMath.hpp"
 
 #include <list>
 
@@ -36,15 +39,13 @@ class Button : public Element
 private:
 	sf::Vector2f mButtonPosition;
 	sf::Vector2f mButtonSize;
+	float mOutlineThickness;
 
 	ButtonColorProperties mBackgroundColorProperties;
 	ButtonColorProperties mOutlineColorProperties;
 
 	sf::RectangleShape *pButtonRectangle;
 	std::list<sf::Shape*> mListOfShapes;
-
-	int helper = 1;
-	bool buttonWasUnpressed = true;
 
 
 public:
@@ -55,9 +56,11 @@ public:
 	void update(sf::Time frametime, sf::RenderWindow *pRenderWindow) override;
 	void render(sf::RenderWindow *pRenderWindow) override;
 
+	void move(sf::Vector2f const & offset);
+
 	void useShape(sf::Shape *shape);
 
-
+	
 };
 
 

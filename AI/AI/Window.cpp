@@ -11,7 +11,8 @@ Window::Window(sf::Font *font)
 	  pFont(font),
 	  mCloseButtonOutlineThickness(2.f),
 	  mCloseButtonSize(mTitleBarHeight - 4.f * mCloseButtonOutlineThickness, mTitleBarHeight - 4.f * mCloseButtonOutlineThickness),
-	  mRelCloseButtonPos(sf::Vector2f(mWindowSize.x - mCloseButtonSize.x - 2.f * mCloseButtonOutlineThickness, (-mTitleBarHeight-mCloseButtonSize.y)/2.f))
+	  mRelCloseButtonPos(sf::Vector2f(mWindowSize.x - mCloseButtonSize.x - 2.f * mCloseButtonOutlineThickness, (-mTitleBarHeight-mCloseButtonSize.y)/2.f)),
+	  mMovable(false)
 {
 	pBackgroundRectangle = new sf::RectangleShape;
 	pBackgroundRectangle->setPosition(mPosition);
@@ -41,6 +42,14 @@ Window::Window(sf::Font *font)
 		mCloseButtonOutlineThickness, 
 		ButtonColorProperties::CloseButtonOutlineColorProperties
 	);
+	/*pCloseButton = new Button
+	(
+		mPosition + mRelCloseButtonPos,
+		mCloseButtonSize,
+		ButtonColorProperties(sf::Color(myMath::randIntervali(0, 255), myMath::randIntervali(0, 255), myMath::randIntervali(0, 255)), sf::Color(myMath::randIntervali(0, 255), myMath::randIntervali(0, 255), myMath::randIntervali(0, 255)), sf::Color(myMath::randIntervali(0, 255), myMath::randIntervali(0, 255), myMath::randIntervali(0, 255))),
+		mCloseButtonOutlineThickness,
+		ButtonColorProperties(sf::Color(myMath::randIntervali(0, 255), myMath::randIntervali(0, 255), myMath::randIntervali(0, 255)), sf::Color(myMath::randIntervali(0, 255), myMath::randIntervali(0, 255), myMath::randIntervali(0, 255)), sf::Color(myMath::randIntervali(0, 255), myMath::randIntervali(0, 255), myMath::randIntervali(0, 255)))
+	);*/
 	sf::RectangleShape rectShape;
 	float rectLength = sqrt(2.f) * 0.8f * mCloseButtonSize.x;
 	float rectBreadth = 4.f;
@@ -85,7 +94,33 @@ void Window::handleEvents()
 //Update
 void Window::update(sf::Time frametime, sf::RenderWindow *pRenderWindow)
 {
+	//Update Close Button
 	pCloseButton->update(frametime, pRenderWindow);
+
+	//Check for movability
+	sf::View defaultView = pRenderWindow->getDefaultView();
+	sf::View actualView = pRenderWindow->getView();
+	pRenderWindow->setView(defaultView);
+	sf::Vector2f mousePosition = static_cast<sf::Vector2f>(sf::Mouse::getPosition(*pRenderWindow));
+	pRenderWindow->setView(actualView);
+	bool leftMouseButtonPressed = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
+	bool mouseOverTitleBar = mySFML::smaller(pTitleBarRectangle->getPosition(), mousePosition) && mySFML::smaller(mousePosition, pTitleBarRectangle->getPosition() + pTitleBarRectangle->getSize() - sf::Vector2f(mTitleBarHeight, 0.f));
+	if (mMovable)
+	{
+		mMovable = leftMouseButtonPressed;
+	}
+	else
+	{
+		mMovable = (mouseOverTitleBar && leftMouseButtonPressed);
+	}
+
+	//Move if movable
+	sf::Vector2f mouseMovement = mousePosition - lastMousePosition;
+	if (mMovable)
+	{
+		move(mouseMovement);
+	}
+	lastMousePosition = mousePosition;
 }
 
 //Render
@@ -107,5 +142,14 @@ void Window::render(sf::RenderWindow *pRenderWindow)
 
 
 
-
+//Setter
+void Window::move(sf::Vector2f const & offset)
+{
+	mPosition = mPosition + offset;
+	pBackgroundRectangle->move(offset);
+	pTitleBarRectangle->move(offset);
+	pRimRectangle->move(offset);
+	pTitleText->move(offset);
+	pCloseButton->move(offset);
+}
 

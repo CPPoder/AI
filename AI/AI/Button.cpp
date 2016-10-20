@@ -40,13 +40,14 @@ Button::Button(sf::Vector2f buttonPos, sf::Vector2f buttonSize, ButtonColorPrope
 	: mButtonPosition(buttonPos),
 	  mButtonSize(buttonSize),
 	  mBackgroundColorProperties(backgroundColorProp),
-	  mOutlineColorProperties(outlineColorProp)
+	  mOutlineColorProperties(outlineColorProp),
+	  mOutlineThickness(outlineThickness)
 {
 	pButtonRectangle = new sf::RectangleShape;
 	pButtonRectangle->setPosition(mButtonPosition);
 	pButtonRectangle->setSize(mButtonSize);
 	pButtonRectangle->setFillColor(mBackgroundColorProperties.normalColor);
-	pButtonRectangle->setOutlineThickness(outlineThickness);
+	pButtonRectangle->setOutlineThickness(mOutlineThickness);
 	pButtonRectangle->setOutlineColor(mOutlineColorProperties.normalColor);
 }
 
@@ -73,35 +74,32 @@ void Button::handleEvents()
 //Update
 void Button::update(sf::Time frametime, sf::RenderWindow *pRenderWindow)
 {
+	sf::View defaultView = pRenderWindow->getDefaultView();
+	sf::View actualView = pRenderWindow->getView();
+	pRenderWindow->setView(defaultView);
+	sf::Vector2f mousePosition = static_cast<sf::Vector2f>(sf::Mouse::getPosition(*pRenderWindow));
+	pRenderWindow->setView(actualView);
 
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+	bool leftMouseButtonPressed = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
+	bool mouseOverButton = mySFML::smaller(mButtonPosition - sf::Vector2f(mOutlineThickness, mOutlineThickness), mousePosition) && mySFML::smaller(mousePosition, mButtonPosition + mButtonSize + sf::Vector2f(mOutlineThickness, mOutlineThickness));
+
+	if (mouseOverButton)
 	{
-		if (buttonWasUnpressed)
+		if (leftMouseButtonPressed)
 		{
-			buttonWasUnpressed = false;
-			switch (helper)
-			{
-			case 1:
-				helper = 2;
-				pButtonRectangle->setFillColor(mBackgroundColorProperties.contactColor);
-				pButtonRectangle->setOutlineColor(mOutlineColorProperties.contactColor);
-				break;
-			case 2:
-				helper = 3;
-				pButtonRectangle->setFillColor(mBackgroundColorProperties.pressedColor);
-				pButtonRectangle->setOutlineColor(mOutlineColorProperties.pressedColor);
-				break;
-			case 3:
-				helper = 1;
-				pButtonRectangle->setFillColor(mBackgroundColorProperties.normalColor);
-				pButtonRectangle->setOutlineColor(mOutlineColorProperties.normalColor);
-				break;
-			}
+			pButtonRectangle->setFillColor(mBackgroundColorProperties.pressedColor);
+			pButtonRectangle->setOutlineColor(mOutlineColorProperties.pressedColor);
+		}
+		else
+		{
+			pButtonRectangle->setFillColor(mBackgroundColorProperties.contactColor);
+			pButtonRectangle->setOutlineColor(mOutlineColorProperties.contactColor);
 		}
 	}
 	else
 	{
-		buttonWasUnpressed = true;
+		pButtonRectangle->setFillColor(mBackgroundColorProperties.normalColor);
+		pButtonRectangle->setOutlineColor(mOutlineColorProperties.normalColor);
 	}
 }
 
@@ -116,6 +114,18 @@ void Button::render(sf::RenderWindow *pRenderWindow)
 }
 
 
+//Setter
+void Button::move(sf::Vector2f const & offset)
+{
+	mButtonPosition = mButtonPosition + offset;
+	pButtonRectangle->move(offset);
+	for (auto shape : mListOfShapes)
+	{
+		shape->move(offset);
+	}
+}
+
+
 
 
 //Access to mListOfDrawables
@@ -124,5 +134,3 @@ void Button::useShape(sf::Shape *shape)
 	shape->move(mButtonPosition);
 	mListOfShapes.push_back(shape);
 }
-
-
