@@ -30,6 +30,7 @@ private:
 	sf::Vector2f mRelCloseButtonPos;
 
 	bool mMovable;
+	bool mResizable;
 	sf::Vector2f lastMousePosition;
 
 
@@ -43,6 +44,7 @@ public:
 	void render(sf::RenderWindow *pRenderWindow) override;
 
 	void move(sf::Vector2f const & offset);
+	void resizeWindow(sf::Vector2f const & offset);
 
 	
 

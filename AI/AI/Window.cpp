@@ -12,7 +12,8 @@ Window::Window(sf::Font *font)
 	  mCloseButtonOutlineThickness(2.f),
 	  mCloseButtonSize(mTitleBarHeight - 4.f * mCloseButtonOutlineThickness, mTitleBarHeight - 4.f * mCloseButtonOutlineThickness),
 	  mRelCloseButtonPos(sf::Vector2f(mWindowSize.x - mCloseButtonSize.x - 2.f * mCloseButtonOutlineThickness, (-mTitleBarHeight-mCloseButtonSize.y)/2.f)),
-	  mMovable(false)
+	  mMovable(false),
+	  mResizable(false)
 {
 	pBackgroundRectangle = new sf::RectangleShape;
 	pBackgroundRectangle->setPosition(mPosition);
@@ -97,13 +98,16 @@ void Window::update(sf::Time frametime, sf::RenderWindow *pRenderWindow)
 	//Update Close Button
 	pCloseButton->update(frametime, pRenderWindow);
 
-	//Check for movability
+	//Get mouse data
 	sf::View defaultView = pRenderWindow->getDefaultView();
 	sf::View actualView = pRenderWindow->getView();
 	pRenderWindow->setView(defaultView);
 	sf::Vector2f mousePosition = static_cast<sf::Vector2f>(sf::Mouse::getPosition(*pRenderWindow));
 	pRenderWindow->setView(actualView);
 	bool leftMouseButtonPressed = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
+	sf::Vector2f mouseMovement = mousePosition - lastMousePosition;
+
+	//Check for movability
 	bool mouseOverTitleBar = mySFML::smaller(pTitleBarRectangle->getPosition(), mousePosition) && mySFML::smaller(mousePosition, pTitleBarRectangle->getPosition() + pTitleBarRectangle->getSize() - sf::Vector2f(mTitleBarHeight, 0.f));
 	if (mMovable)
 	{
@@ -115,11 +119,40 @@ void Window::update(sf::Time frametime, sf::RenderWindow *pRenderWindow)
 	}
 
 	//Move if movable
-	sf::Vector2f mouseMovement = mousePosition - lastMousePosition;
 	if (mMovable)
 	{
 		move(mouseMovement);
 	}
+
+	//Check for resizability
+	sf::Vector2f const pullAreaSize(5.f, 5.f);
+	bool mouseRightBottom = mySFML::smaller(mPosition + mWindowSize - pullAreaSize, mousePosition) && mySFML::smaller(mousePosition, mPosition + mWindowSize + pullAreaSize);
+	if (mResizable)
+	{
+		mResizable = leftMouseButtonPressed;
+	}
+	else
+	{
+		mResizable = (mouseRightBottom && leftMouseButtonPressed);
+	}
+
+	//Resize if resizable
+	sf::Vector2f const leastSize = sf::Vector2f(50.f, 50.f);
+	if (mResizable)
+	{
+		sf::Vector2f resizeVector = mouseMovement;
+		if (mWindowSize.x <= leastSize.x && mouseMovement.x < 0.f)
+		{
+			resizeVector.x = 0.f;
+		}
+		if (mWindowSize.y <= leastSize.y && mouseMovement.y < 0.f)
+		{
+			resizeVector.y = 0.f;
+		}
+		resizeWindow(resizeVector);
+	}
+
+	//Set lastMousePosition
 	lastMousePosition = mousePosition;
 }
 
@@ -151,5 +184,13 @@ void Window::move(sf::Vector2f const & offset)
 	pRimRectangle->move(offset);
 	pTitleText->move(offset);
 	pCloseButton->move(offset);
+}
+void Window::resizeWindow(sf::Vector2f const & offset)
+{
+	mWindowSize = mWindowSize + offset;
+	pBackgroundRectangle->setSize(pBackgroundRectangle->getSize() + offset);
+	pTitleBarRectangle->setSize(pTitleBarRectangle->getSize() + sf::Vector2f(offset.x, 0.f));
+	pRimRectangle->setSize(pRimRectangle->getSize() + offset);
+	pCloseButton->move(sf::Vector2f(offset.x, 0.f));
 }
 
