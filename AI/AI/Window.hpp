@@ -3,6 +3,7 @@
 
 
 #include "Element.hpp"
+#include "Button.hpp"
 
 #include "SFML\Graphics.hpp"
 
@@ -22,6 +23,12 @@ private:
 
 	sf::Font *pFont;
 	sf::Text *pTitleText;
+
+	Button *pCloseButton;
+	float mCloseButtonOutlineThickness;
+	sf::Vector2f mCloseButtonSize;
+	sf::Vector2f mRelCloseButtonPos;
+
 
 
 

@@ -103,7 +103,8 @@ void World::update(sf::Time frametime)
 	//CreaturesReproduce
 	creaturesReproduce();
 
-
+	//Update Window
+	pWindow->update(frametime);
 }
 
 void World::render(sf::RenderWindow *renderWindow)
