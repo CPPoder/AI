@@ -99,7 +99,7 @@ void Framework::update()
 	}
 
 	//Updating the world
-	pWorld->update(usedTimeFactor * mFrametime);
+	pWorld->update(usedTimeFactor * mFrametime, pRenderWindow);
 
 
 	//Change View

@@ -53,7 +53,7 @@ World::~World()
 	pWindow = nullptr;
 }
 
-void World::update(sf::Time frametime)
+void World::update(sf::Time frametime, sf::RenderWindow *pRenderWindow)
 {
 	//Add frametime to mSimulationTime
 	mSimulationTime = mSimulationTime + frametime;
@@ -64,11 +64,11 @@ void World::update(sf::Time frametime)
 	//Update herbies and carnies
 	for (auto herb : mListOfHerbivores)
 	{
-		herb->update(frametime);
+		herb->update(frametime, pRenderWindow);
 	}
 	for (auto carn : mListOfCarnivores)
 	{
-		carn->update(frametime);
+		carn->update(frametime, pRenderWindow);
 	}
 
 	//Domesticate perodic boundary conditions
@@ -104,7 +104,7 @@ void World::update(sf::Time frametime)
 	creaturesReproduce();
 
 	//Update Window
-	pWindow->update(frametime);
+	pWindow->update(frametime, pRenderWindow);
 }
 
 void World::render(sf::RenderWindow *renderWindow)

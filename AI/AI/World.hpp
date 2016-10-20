@@ -43,7 +43,7 @@ public:
 	World(sf::Vector2u worldSize, sf::Font* font);
 	~World() override;
 
-	void update(sf::Time frametime) override;
+	void update(sf::Time frametime, sf::RenderWindow *pRenderWindow) override;
 	void render(sf::RenderWindow *renderWindow) override;
 	void handleEvents() override;
 

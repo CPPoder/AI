@@ -24,7 +24,7 @@ Bar::~Bar()
 }
 
 
-void Bar::update(sf::Time frametime)
+void Bar::update(sf::Time frametime, sf::RenderWindow *pRenderWindow)
 {
 	
 }

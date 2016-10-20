@@ -42,7 +42,7 @@ Creature::~Creature()
 }
 
 
-void Creature::update(sf::Time frametime)
+void Creature::update(sf::Time frametime, sf::RenderWindow *pRenderWindow)
 {
 	//Translation
 	pBrain->setInputFromSence(mInputFromSence);

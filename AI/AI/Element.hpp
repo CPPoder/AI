@@ -18,7 +18,7 @@ public:
     virtual ~Element();
 
 	virtual void handleEvents() = 0;
-	virtual void update(sf::Time frametime) = 0;
+	virtual void update(sf::Time frametime, sf::RenderWindow *pRenderWindow) = 0;
 	virtual void render(sf::RenderWindow *pRenderWindow) = 0;
 
 };

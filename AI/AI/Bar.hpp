@@ -30,7 +30,7 @@ public:
 	Bar(sf::Vector2f position, sf::Vector2f fullBarSize, sf::Color barColor, sf::Color lostBarColor, float fillQuotient);
 	~Bar();
 
-	void update(sf::Time frametime) override;
+	void update(sf::Time frametime, sf::RenderWindow *pRenderWindow) override;
 	void render(sf::RenderWindow *renderWindow) override;
 	void handleEvents() override;
 

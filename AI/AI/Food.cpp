@@ -21,7 +21,7 @@ Food::~Food()
 }
 
 
-void Food::update(sf::Time frametime)
+void Food::update(sf::Time frametime, sf::RenderWindow *pRenderWindow)
 {
 }
 

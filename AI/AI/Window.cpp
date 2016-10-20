@@ -83,9 +83,9 @@ void Window::handleEvents()
 }
 
 //Update
-void Window::update(sf::Time frametime)
+void Window::update(sf::Time frametime, sf::RenderWindow *pRenderWindow)
 {
-	pCloseButton->update(frametime);
+	pCloseButton->update(frametime, pRenderWindow);
 }
 
 //Render

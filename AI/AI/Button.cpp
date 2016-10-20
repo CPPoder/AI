@@ -71,8 +71,9 @@ void Button::handleEvents()
 }
 
 //Update
-void Button::update(sf::Time frametime)
+void Button::update(sf::Time frametime, sf::RenderWindow *pRenderWindow)
 {
+
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 	{
 		if (buttonWasUnpressed)
