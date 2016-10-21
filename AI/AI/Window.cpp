@@ -13,7 +13,9 @@ Window::Window(sf::Font *font)
 	  mCloseButtonSize(mTitleBarHeight - 4.f * mCloseButtonOutlineThickness, mTitleBarHeight - 4.f * mCloseButtonOutlineThickness),
 	  mRelCloseButtonPos(sf::Vector2f(mWindowSize.x - mCloseButtonSize.x - 2.f * mCloseButtonOutlineThickness, (-mTitleBarHeight-mCloseButtonSize.y)/2.f)),
 	  mMovable(false),
-	  mResizable(false)
+	  mResizable(false),
+	  mCloseButtonWasPressed(false),
+	  mCloseButtonReleased(false)
 {
 	pBackgroundRectangle = new sf::RectangleShape;
 	pBackgroundRectangle->setPosition(mPosition);
@@ -34,7 +36,7 @@ Window::Window(sf::Font *font)
 	pTitleText = new sf::Text("Title", *pFont, static_cast<unsigned int>(mTitleBarHeight * 0.53f));
 	pTitleText->setColor(sf::Color::Black);
 	pTitleText->setPosition(pTitleBarRectangle->getPosition() + sf::Vector2f(0.f, 0.7f * (mTitleBarHeight - static_cast<float>(pTitleText->getCharacterSize())) / 2.f) + sf::Vector2f(5.f, 0.f));
-
+	
 	pCloseButton = new Button
 	(
 		mPosition + mRelCloseButtonPos, 
@@ -43,6 +45,7 @@ Window::Window(sf::Font *font)
 		mCloseButtonOutlineThickness, 
 		ButtonColorProperties::CloseButtonOutlineColorProperties
 	);
+	
 	/*pCloseButton = new Button
 	(
 		mPosition + mRelCloseButtonPos,
@@ -154,6 +157,16 @@ void Window::update(sf::Time frametime, sf::RenderWindow *pRenderWindow)
 
 	//Set lastMousePosition
 	lastMousePosition = mousePosition;
+
+	//Check status of CloseButton
+	bool closeButtonPressed = pCloseButton->getButtonPressed();
+	if ((!closeButtonPressed) && mCloseButtonWasPressed)
+	{
+		mCloseButtonReleased = true;
+	}
+
+	//Set mCloseButtonWasPressed
+	mCloseButtonWasPressed = closeButtonPressed;
 }
 
 //Render
@@ -194,3 +207,9 @@ void Window::resizeWindow(sf::Vector2f const & offset)
 	pCloseButton->move(sf::Vector2f(offset.x, 0.f));
 }
 
+
+//Getter
+bool Window::getCloseButtonReleased() const
+{
+	return mCloseButtonReleased;
+}

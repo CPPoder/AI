@@ -33,6 +33,9 @@ private:
 	bool mResizable;
 	sf::Vector2f lastMousePosition;
 
+	bool mCloseButtonWasPressed;
+	bool mCloseButtonReleased;
+
 
 
 public:
@@ -45,6 +48,8 @@ public:
 
 	void move(sf::Vector2f const & offset);
 	void resizeWindow(sf::Vector2f const & offset);
+
+	bool getCloseButtonReleased() const;
 
 	
 

@@ -104,7 +104,16 @@ void World::update(sf::Time frametime, sf::RenderWindow *pRenderWindow)
 	creaturesReproduce();
 
 	//Update Window
-	pWindow->update(frametime, pRenderWindow);
+	if (pWindow != nullptr)
+	{
+		pWindow->update(frametime, pRenderWindow);
+		bool windowShallBeClosed = pWindow->getCloseButtonReleased();
+		if (windowShallBeClosed)
+		{
+			delete pWindow;
+			pWindow = nullptr;
+		}
+	}
 }
 
 void World::render(sf::RenderWindow *renderWindow)
@@ -122,8 +131,10 @@ void World::render(sf::RenderWindow *renderWindow)
 	{
 		carn->render(renderWindow);
 	}
-
-	pWindow->render(renderWindow);
+	if (pWindow != nullptr)
+	{
+		pWindow->render(renderWindow);
+	}
 }
 
 void World::handleEvents()

@@ -47,6 +47,8 @@ private:
 	sf::RectangleShape *pButtonRectangle;
 	std::list<sf::Shape*> mListOfShapes;
 
+	bool mButtonPressed;
+
 
 public:
 	Button(sf::Vector2f buttonPos, sf::Vector2f buttonSize, ButtonColorProperties backgroundColorProp, float outlineThickness, ButtonColorProperties outlineColorProp);
@@ -59,6 +61,8 @@ public:
 	void move(sf::Vector2f const & offset);
 
 	void useShape(sf::Shape *shape);
+
+	bool getButtonPressed() const;
 
 	
 };
