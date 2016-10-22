@@ -162,6 +162,7 @@
     <ClInclude Include="Herbivore.hpp" />
     <ClInclude Include="mySFMLVectorFunctions.hpp" />
     <ClInclude Include="myUsefulMath.hpp" />
+    <ClInclude Include="Screen.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Window.hpp" />
@@ -180,6 +181,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mySFMLVectorFunctions.cpp" />
     <ClCompile Include="myUsefulMath.cpp" />
+    <ClCompile Include="Screen.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

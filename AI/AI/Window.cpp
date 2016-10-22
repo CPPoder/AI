@@ -67,6 +67,8 @@ Window::Window(sf::Font *font)
 	pRectShape2->rotate(-45.f);
 	pCloseButton->useShape(pRectShape1);
 	pCloseButton->useShape(pRectShape2);
+
+	pScreen = new Screen(sf::FloatRect(mPosition.x, mPosition.y, mWindowSize.x, mWindowSize.y), sf::Color::Green);
 }
 
 //Destructor
@@ -86,6 +88,9 @@ Window::~Window()
 
 	delete pCloseButton;
 	pCloseButton = nullptr;
+
+	delete pScreen;
+	pScreen = nullptr;
 }
 
 
@@ -182,6 +187,8 @@ void Window::render(sf::RenderWindow *pRenderWindow)
 	pRenderWindow->draw(*pTitleText);
 	pCloseButton->render(pRenderWindow);
 
+	pScreen->render(pRenderWindow);
+
 	pRenderWindow->setView(actualView);
 }
 
@@ -197,6 +204,7 @@ void Window::move(sf::Vector2f const & offset)
 	pRimRectangle->move(offset);
 	pTitleText->move(offset);
 	pCloseButton->move(offset);
+	pScreen->moveViewport(offset);
 }
 void Window::resizeWindow(sf::Vector2f const & offset)
 {
@@ -205,6 +213,7 @@ void Window::resizeWindow(sf::Vector2f const & offset)
 	pTitleBarRectangle->setSize(pTitleBarRectangle->getSize() + sf::Vector2f(offset.x, 0.f));
 	pRimRectangle->setSize(pRimRectangle->getSize() + offset);
 	pCloseButton->move(sf::Vector2f(offset.x, 0.f));
+	pScreen->changeViewportSize(offset);
 }
 
 

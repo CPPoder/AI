@@ -4,6 +4,7 @@
 
 #include "Element.hpp"
 #include "Button.hpp"
+#include "Screen.hpp"
 
 #include "SFML\Graphics.hpp"
 
@@ -35,6 +36,8 @@ private:
 
 	bool mCloseButtonWasPressed;
 	bool mCloseButtonReleased;
+
+	Screen *pScreen;
 
 
 
