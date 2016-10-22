@@ -77,6 +77,9 @@ namespace mySFML {
 	//Mix colors
 	sf::Color mixColors(sf::Color color1, sf::Color color2, float weight1, float weight2);
 
+	//Create RectangleShape
+	sf::RectangleShape createRectangleShape(sf::Vector2f const & pos, sf::Vector2f const & size, float rotation, sf::Color const & color, float outlineThickness = 0.f, sf::Color const & outlineColor = sf::Color::Black);
+
 }
 
 

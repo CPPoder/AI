@@ -59,5 +59,17 @@ namespace mySFML {
 	{
 		return (colorMultiplication(color1, weight1) + colorMultiplication(color2, weight2));
 	}
+
+	sf::RectangleShape mySFML::createRectangleShape(sf::Vector2f const & pos, sf::Vector2f const & size, float rotation, sf::Color const & fillColor, float outlineThickness, sf::Color const & outlineColor)
+	{
+		sf::RectangleShape shape;
+		shape.setPosition(pos);
+		shape.setSize(size);
+		shape.rotate(rotation);
+		shape.setFillColor(fillColor);
+		shape.setOutlineColor(outlineColor);
+		shape.setOutlineThickness(outlineThickness);
+		return shape;
+	}
 	
 }

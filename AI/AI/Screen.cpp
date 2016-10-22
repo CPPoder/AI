@@ -2,130 +2,6 @@
 #include "Screen.hpp"
 
 
-///////////
-//DrawStuff
-
-//Constructor
-DrawStuff::DrawStuff()
-{
-
-}
-
-//Detailed Construction
-DrawStuff::DrawStuff(std::list<LayeredShape> const & listOfLayeredShapes, std::list<LayeredSprite> const & listOfLayeredSprites, std::list<LayeredText> const & listOfLayeredTexts)
-{
-	mListOfShapes = listOfLayeredShapes;
-	mListOfSprites = listOfLayeredSprites;
-	mListOfTexts = listOfLayeredTexts;
-}
-
-//Destructor
-DrawStuff::~DrawStuff()
-{
-
-}
-
-//Setter
-void DrawStuff::clear()
-{
-	mListOfShapes.clear();
-	mListOfSprites.clear();
-	mListOfTexts.clear();
-}
-void DrawStuff::setListOfShapes(std::list<LayeredShape> const & listOfShapes)
-{
-	mListOfShapes = listOfShapes;
-}
-void DrawStuff::setListOfSprites(std::list<LayeredSprite> const & listOfSprites)
-{
-	mListOfSprites = listOfSprites;
-}
-void DrawStuff::setListOfTexts(std::list<LayeredText> const & listOfTexts)
-{
-	mListOfTexts = listOfTexts;
-}
-void DrawStuff::addDrawStuff(DrawStuff const & drawStuff)
-{
-	std::list<LayeredShape> shapeList = drawStuff.mListOfShapes;
-	std::list<LayeredSprite> spriteList = drawStuff.mListOfSprites;
-	std::list<LayeredText> textList = drawStuff.mListOfTexts;
-	for (auto shape : shapeList)
-	{
-		mListOfShapes.push_back(shape);
-	}
-	for (auto sprite : spriteList)
-	{
-		mListOfSprites.push_back(sprite);
-	}
-	for (auto text : textList)
-	{
-		mListOfTexts.push_back(text);
-	}
-}
-void DrawStuff::setDrawStuff(DrawStuff const & drawStuff)
-{
-	mListOfShapes = drawStuff.mListOfShapes;
-	mListOfSprites = drawStuff.mListOfSprites;
-	mListOfTexts = drawStuff.mListOfTexts;
-}
-
-//Getter
-unsigned int DrawStuff::getGreatestLayer() const
-{
-	unsigned int greatestLayer = 0;
-	for (auto shape : mListOfShapes)
-	{
-		if (shape.layer > greatestLayer)
-		{
-			greatestLayer = shape.layer;
-		}
-	}
-	for (auto sprite : mListOfSprites)
-	{
-		if (sprite.layer > greatestLayer)
-		{
-			greatestLayer = sprite.layer;
-		}
-	}
-	for (auto text : mListOfTexts)
-	{
-		if (text.layer > greatestLayer)
-		{
-			greatestLayer = text.layer;
-		}
-	}
-	return greatestLayer;
-}
-
-//Render one Layer
-void DrawStuff::render(sf::RenderWindow *pRenderWindow, unsigned int layer) const
-{
-	for (auto shape : mListOfShapes)
-	{
-		if (shape.layer == layer)
-		{
-			shape.render(pRenderWindow);
-		}
-	}
-	for (auto sprite : mListOfSprites)
-	{
-		if (sprite.layer == layer)
-		{
-			sprite.render(pRenderWindow);
-		}
-	}
-	for (auto text : mListOfTexts)
-	{
-		if (text.layer == layer)
-		{
-			text.render(pRenderWindow);
-		}
-	}
-}
-
-
-
-
 
 ////////
 //Screen
@@ -136,17 +12,18 @@ Screen::Screen()
 {
 }
 Screen::Screen(sf::FloatRect const & viewportRectangle, sf::Color backgroundColor)
-	: mViewportRectangle(viewportRectangle)
+	: mViewportRectangle(viewportRectangle),
+	  mHighestLayer(0)
 {
-	mBackgroundRectangleShape.setPosition(mViewportRectangle.left, mViewportRectangle.top);
-	mBackgroundRectangleShape.setSize(sf::Vector2f(mViewportRectangle.width, mViewportRectangle.height));
+	mBackgroundRectangleShape.setPosition(0.f, 0.f);
+	mBackgroundRectangleShape.setSize(sf::Vector2f(1.f, 1.f));
 	mBackgroundRectangleShape.setFillColor(backgroundColor);
 }
 
 //Destructor
 Screen::~Screen()
 {
-
+	Screen::deleteDrawStuff();
 }
 
 
@@ -168,8 +45,9 @@ void Screen::render(sf::RenderWindow *pRenderWindow)
 	//Determine Default View
 	sf::View defaultView = pRenderWindow->getDefaultView();
 	sf::View actualView = pRenderWindow->getView();
-	sf::View screenView = defaultView;
+	sf::View screenView(sf::FloatRect(0.f, 0.f, 1.f, 1.f));
 	sf::Vector2f defaultViewSize = defaultView.getSize();
+	//std::cout << defaultViewSize.x << '\t' << defaultViewSize.y << std::endl;
 	float leftRelWinPos = mViewportRectangle.left / defaultViewSize.x;
 	float rightRelWinPos = (mViewportRectangle.left + mViewportRectangle.width) / defaultViewSize.x;
 	float upperRelWinPos = mViewportRectangle.top / defaultViewSize.y;
@@ -181,10 +59,9 @@ void Screen::render(sf::RenderWindow *pRenderWindow)
 
 	//Render
 	pRenderWindow->draw(mBackgroundRectangleShape);
-	unsigned int greatestLayer = mDrawStuff.getGreatestLayer();
-	for (unsigned int layer = 0; layer <= greatestLayer; layer++)
+	for (unsigned int layer = 0; layer <= mHighestLayer; layer++)
 	{
-		mDrawStuff.render(pRenderWindow, layer);
+		Screen::renderDrawStuffLayer(pRenderWindow, layer);
 	}
 
 	//Reset View
@@ -197,15 +74,26 @@ void Screen::render(sf::RenderWindow *pRenderWindow)
 //Setter
 void Screen::clearDrawStuff()
 {
-	mDrawStuff.clear();
+	Screen::deleteDrawStuff();
+	mListOfLayeredShapes.clear();
+	mListOfLayeredSprites.clear();
+	mListOfLayeredTexts.clear();
+	mHighestLayer = 0;
 }
-void Screen::addDrawStuff(DrawStuff const & drawStuff)
+void Screen::addShape(sf::Shape *shapePointer, unsigned int layer)
 {
-	mDrawStuff.addDrawStuff(drawStuff);
+	mListOfLayeredShapes.push_back(std::pair<sf::Shape *, unsigned int>(shapePointer, layer));
+	mHighestLayer = myMath::max(mHighestLayer, layer);
 }
-void Screen::setDrawStuff(DrawStuff const & drawStuff)
+void Screen::addSprite(sf::Sprite *spritePointer, unsigned int layer)
 {
-	mDrawStuff.setDrawStuff(drawStuff);
+	mListOfLayeredSprites.push_back(std::pair<sf::Sprite *, unsigned int>(spritePointer, layer));
+	mHighestLayer = myMath::max(mHighestLayer, layer);
+}
+void Screen::addText(sf::Text *textPointer, unsigned int layer)
+{
+	mListOfLayeredTexts.push_back(std::pair<sf::Text *, unsigned int>(textPointer, layer));
+	mHighestLayer = myMath::max(mHighestLayer, layer);
 }
 void Screen::setViewport(sf::FloatRect viewportRectangle)
 {
@@ -233,3 +121,50 @@ void Screen::setBackgroundColor(sf::Color backgroundColor)
 
 
 
+//Delete Draw Stuff
+void Screen::deleteDrawStuff()
+{
+	for (auto shapePair : mListOfLayeredShapes)
+	{
+		delete shapePair.first;
+		shapePair.first = nullptr;
+	}
+	for (auto spritePair : mListOfLayeredSprites)
+	{
+		delete spritePair.first;
+		spritePair.first = nullptr;
+	}
+	for (auto textPair : mListOfLayeredTexts)
+	{
+		delete textPair.first;
+		textPair.first = nullptr;
+	}
+}
+
+
+
+//Render Draw Stuff
+void Screen::renderDrawStuffLayer(sf::RenderWindow *pRenderWindow, unsigned int layer)
+{
+	for (auto shape : mListOfLayeredShapes)
+	{
+		if (shape.second == layer)
+		{
+			pRenderWindow->draw(*shape.first);
+		}
+	}
+	for (auto sprite : mListOfLayeredSprites)
+	{
+		if (sprite.second == layer)
+		{
+			pRenderWindow->draw(*sprite.first);
+		}
+	}
+	for (auto text : mListOfLayeredTexts)
+	{
+		if (text.second == layer)
+		{
+			pRenderWindow->draw(*text.first);
+		}
+	}
+}

@@ -69,6 +69,8 @@ Window::Window(sf::Font *font)
 	pCloseButton->useShape(pRectShape2);
 
 	pScreen = new Screen(sf::FloatRect(mPosition.x, mPosition.y, mWindowSize.x, mWindowSize.y), sf::Color::Green);
+	sf::RectangleShape shape = mySFML::createRectangleShape(sf::Vector2f(0.2f, 0.2f), sf::Vector2f(0.1f, 0.1f), 20.f, sf::Color::Red);
+	pScreen->addShape(new sf::RectangleShape(shape), 0);
 }
 
 //Destructor
