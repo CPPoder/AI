@@ -12,6 +12,7 @@
 #include "Carnivore.hpp"
 #include "Food.hpp"
 #include "Window.hpp"
+#include "DataListener.hpp"
 
 #include "myUsefulMath.hpp"
 
@@ -34,6 +35,12 @@ private:
 	unsigned int const mNumOfFood = 1000;
 	sf::Time mFoodSpawningTime = sf::seconds(0.02f);
 	sf::Time mTimeSinceLastFoodSpawn = sf::seconds(0.f);
+
+	DataListener mDataListener; //Hier weitermachen!!!
+	unsigned int mActualNumberOfCarnies;
+	unsigned int mActualNumberOfHerbies;
+	unsigned int mActualNumberOfFood;
+
 
 	Window *pWindow = nullptr;
 

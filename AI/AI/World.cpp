@@ -9,7 +9,10 @@ World::World()
 
 World::World(sf::Vector2u worldSize, sf::Font *font)
 	: mWorldSize(static_cast<sf::Vector2f>(worldSize)),
-	  pFont(font)
+	  pFont(font),
+	  mActualNumberOfCarnies(0),
+	  mActualNumberOfHerbies(0),
+	  mActualNumberOfFood(0)
 {
 	mWorldBackground.setPosition(0.f, 0.f);
 	mWorldBackground.setSize(mWorldSize);
@@ -102,6 +105,19 @@ void World::update(sf::Time frametime, sf::RenderWindow *pRenderWindow)
 
 	//CreaturesReproduce
 	creaturesReproduce();
+
+	//Check Actual Numbers of Creatures
+	unsigned int newNumOfCarnies = mListOfCarnivores.size();
+	unsigned int newNumOfHerbies = mListOfHerbivores.size();
+	unsigned int newNumOfFood = mListOfFood.size();
+	if ((newNumOfCarnies != mActualNumberOfCarnies) || (newNumOfHerbies != mActualNumberOfHerbies))
+	{
+		mDataListener.addCreatureNumberData(mSimulationTime, newNumOfCarnies, newNumOfHerbies, newNumOfFood);
+		mActualNumberOfCarnies = newNumOfCarnies;
+		mActualNumberOfHerbies = newNumOfHerbies;
+		mActualNumberOfFood = newNumOfFood;
+	}
+	
 
 	//Update Window
 	if (pWindow != nullptr)
