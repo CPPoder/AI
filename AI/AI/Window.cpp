@@ -68,9 +68,9 @@ Window::Window(sf::Font *font)
 	pCloseButton->useShape(pRectShape1);
 	pCloseButton->useShape(pRectShape2);
 
-	pScreen = new Screen(sf::FloatRect(mPosition.x, mPosition.y, mWindowSize.x, mWindowSize.y), sf::Color::Green);
-	sf::RectangleShape shape = mySFML::createRectangleShape(sf::Vector2f(0.2f, 0.2f), sf::Vector2f(0.1f, 0.1f), 20.f, sf::Color::Red);
-	pScreen->addShape(new sf::RectangleShape(shape), 0);
+	pScreen = new Screen(sf::FloatRect(mPosition.x, mPosition.y, mWindowSize.x, mWindowSize.y), sf::Color::White);
+	//sf::RectangleShape shape = mySFML::createRectangleShape(sf::Vector2f(0.2f, 0.2f), sf::Vector2f(0.1f, 0.1f), 20.f, sf::Color::Red);
+	//pScreen->addShape(new sf::RectangleShape(shape), 0);
 }
 
 //Destructor
@@ -224,3 +224,39 @@ bool Window::getCloseButtonReleased() const
 {
 	return mCloseButtonReleased;
 }
+
+
+//Screen Control Elements
+void Window::clearDrawStuff()
+{
+	pScreen->clearDrawStuff();
+}
+void Window::addShape(sf::Shape *shapePointer, unsigned int layer)
+{
+	pScreen->addShape(shapePointer, layer);
+}
+void Window::addSprite(sf::Sprite *spritePointer, unsigned int layer)
+{
+	pScreen->addSprite(spritePointer, layer);
+}
+void Window::addText(sf::Text *textPointer, unsigned int layer)
+{
+	//std::cout << textPointer->getPosition().x << '\t' << textPointer->getPosition().y << std::endl;
+	pScreen->addText(textPointer, layer);
+}
+void Window::addVertexArray(sf::VertexArray *vertexArrayPointer, unsigned int layer)
+{
+	pScreen->addVertexArray(vertexArrayPointer, layer);
+}
+void Window::setScreenBackgroundColor(sf::Color backgroundColor)
+{
+	pScreen->setBackgroundColor(backgroundColor);
+}
+
+/*Screen* Window::getScreenPointer() const
+{
+	return pScreen;
+}*/
+
+
+

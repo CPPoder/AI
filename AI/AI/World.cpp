@@ -12,7 +12,8 @@ World::World(sf::Vector2u worldSize, sf::Font *font)
 	  pFont(font),
 	  mActualNumberOfCarnies(0),
 	  mActualNumberOfHerbies(0),
-	  mActualNumberOfFood(0)
+	  mActualNumberOfFood(0),
+	  mDataPresenter(pFont)
 {
 	mWorldBackground.setPosition(0.f, 0.f);
 	mWorldBackground.setSize(mWorldSize);
@@ -130,6 +131,24 @@ void World::update(sf::Time frametime, sf::RenderWindow *pRenderWindow)
 			pWindow = nullptr;
 		}
 	}
+
+	//Feed Window with DrawStuff
+	if (pWindow != nullptr)
+	{
+		pWindow->clearDrawStuff();
+		std::list<sf::VertexArray> listOfVertexArrays = mDataPresenter.getListOfVertexArrays();
+		for (auto vertexArray : listOfVertexArrays)
+		{
+			pWindow->addVertexArray(new sf::VertexArray(vertexArray), 0);
+		}
+		std::list<sf::Text> listOfTexts = mDataPresenter.getListOfTexts();
+		for (auto text : listOfTexts)
+		{
+			pWindow->addText(new sf::Text(text), 0);
+		}
+	}
+
+
 }
 
 void World::render(sf::RenderWindow *renderWindow)

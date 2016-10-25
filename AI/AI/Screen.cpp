@@ -78,6 +78,7 @@ void Screen::clearDrawStuff()
 	mListOfLayeredShapes.clear();
 	mListOfLayeredSprites.clear();
 	mListOfLayeredTexts.clear();
+	mListOfLayeredVertexArrays.clear();
 	mHighestLayer = 0;
 }
 void Screen::addShape(sf::Shape *shapePointer, unsigned int layer)
@@ -92,7 +93,14 @@ void Screen::addSprite(sf::Sprite *spritePointer, unsigned int layer)
 }
 void Screen::addText(sf::Text *textPointer, unsigned int layer)
 {
+	//textPointer->setScale(0.001f, 0.001f);
+	textPointer->setScale(1.f / mViewportRectangle.width, 1.f / mViewportRectangle.height);
 	mListOfLayeredTexts.push_back(std::pair<sf::Text *, unsigned int>(textPointer, layer));
+	mHighestLayer = myMath::max(mHighestLayer, layer);
+}
+void Screen::addVertexArray(sf::VertexArray *vertexArrayPointer, unsigned int layer)
+{
+	mListOfLayeredVertexArrays.push_back(std::pair<sf::VertexArray *, unsigned int>(vertexArrayPointer, layer));
 	mHighestLayer = myMath::max(mHighestLayer, layer);
 }
 void Screen::setViewport(sf::FloatRect viewportRectangle)
@@ -139,6 +147,11 @@ void Screen::deleteDrawStuff()
 		delete textPair.first;
 		textPair.first = nullptr;
 	}
+	for (auto vertexArrayPair : mListOfLayeredVertexArrays)
+	{
+		delete vertexArrayPair.first;
+		vertexArrayPair.first = nullptr;
+	}
 }
 
 
@@ -146,6 +159,13 @@ void Screen::deleteDrawStuff()
 //Render Draw Stuff
 void Screen::renderDrawStuffLayer(sf::RenderWindow *pRenderWindow, unsigned int layer)
 {
+	for (auto vertexArray : mListOfLayeredVertexArrays)
+	{
+		if (vertexArray.second == layer)
+		{
+			pRenderWindow->draw(*vertexArray.first);
+		}
+	}
 	for (auto shape : mListOfLayeredShapes)
 	{
 		if (shape.second == layer)

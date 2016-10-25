@@ -155,8 +155,10 @@
     <ClInclude Include="Brain.hpp" />
     <ClInclude Include="Button.hpp" />
     <ClInclude Include="Carnivore.hpp" />
+    <ClInclude Include="CoordinateSystem.hpp" />
     <ClInclude Include="Creature.hpp" />
     <ClInclude Include="DataListener.hpp" />
+    <ClInclude Include="DataPresenter.hpp" />
     <ClInclude Include="Element.hpp" />
     <ClInclude Include="Food.hpp" />
     <ClInclude Include="Framework.hpp" />
@@ -174,8 +176,10 @@
     <ClCompile Include="Brain.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Carnivore.cpp" />
+    <ClCompile Include="CoordinateSystem.cpp" />
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="DataListener.cpp" />
+    <ClCompile Include="DataPresenter.cpp" />
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="Food.cpp" />
     <ClCompile Include="Framework.cpp" />

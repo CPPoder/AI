@@ -13,6 +13,7 @@
 #include "Food.hpp"
 #include "Window.hpp"
 #include "DataListener.hpp"
+#include "DataPresenter.hpp"
 
 #include "myUsefulMath.hpp"
 
@@ -43,6 +44,7 @@ private:
 
 
 	Window *pWindow = nullptr;
+	DataPresenter mDataPresenter;
 
 
 public:

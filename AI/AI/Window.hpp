@@ -54,6 +54,15 @@ public:
 
 	bool getCloseButtonReleased() const;
 
+	void clearDrawStuff();
+	void addShape(sf::Shape *shapePointer, unsigned int layer);
+	void addSprite(sf::Sprite *spritePointer, unsigned int layer);
+	void addText(sf::Text *textPointer, unsigned int layer);
+	void addVertexArray(sf::VertexArray *vertexArrayPointer, unsigned int layer);
+	void setScreenBackgroundColor(sf::Color backgroundColor);
+
+	//Screen* getScreenPointer() const;
+
 	
 
 };
