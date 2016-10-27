@@ -35,7 +35,7 @@ World::World(sf::Vector2u worldSize, sf::Font *font)
 		mListOfFood.push_back(new Food(sf::Vector2f(myMath::randIntervalf(0, static_cast<int>(mWorldSize.x)), myMath::randIntervalf(0, static_cast<int>(mWorldSize.y)))));
 	}
 
-	pWindow = new Window(pFont);
+	pWindow = new Window(pFont, sf::Vector2f(100.f, 200.f), sf::Vector2f(600.f, 400.f));
 }
 
 World::~World()
@@ -133,7 +133,8 @@ void World::update(sf::Time frametime, sf::RenderWindow *pRenderWindow)
 	}
 
 	//Feed Window with DrawStuff
-	if (pWindow != nullptr)
+	mDataPresenter.update();
+	if (pWindow != nullptr && mDataPresenter.getHasChanged())
 	{
 		pWindow->clearDrawStuff();
 		std::list<sf::VertexArray> listOfVertexArrays = mDataPresenter.getListOfVertexArrays();
@@ -146,6 +147,7 @@ void World::update(sf::Time frametime, sf::RenderWindow *pRenderWindow)
 		{
 			pWindow->addText(new sf::Text(text), 0);
 		}
+		mDataPresenter.usedAllNewData();
 	}
 
 

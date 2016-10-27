@@ -2,7 +2,9 @@
 #define DATAPRESENTER_HPP
 
 #include "SFML\Graphics.hpp"
+
 #include <list>
+#include <iostream>
 
 #include "CoordinateSystem.hpp"
 
@@ -20,6 +22,8 @@ private:
 
 	CoordinateSystem mCoordinateSystem;
 
+	bool mDataPresenterChanged;
+
 
 
 	
@@ -29,8 +33,13 @@ public:
 	DataPresenter(sf::Font *font);
 	~DataPresenter();
 
+	void update();
+
 	std::list<sf::VertexArray> getListOfVertexArrays() const;
 	std::list<sf::Text> getListOfTexts() const;
+	bool getHasChanged() const;
+
+	void usedAllNewData();
 
 
 };

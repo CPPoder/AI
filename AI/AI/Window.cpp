@@ -3,9 +3,9 @@
 
 
 //Default Constructor
-Window::Window(sf::Font *font)
-	: mPosition(sf::Vector2f(300.f, 200.f)),
-	  mWindowSize(sf::Vector2f(600.f, 400.f)),
+Window::Window(sf::Font *font, sf::Vector2f position, sf::Vector2f size)
+	: mPosition(position),
+	  mWindowSize(size),
 	  mTitleBarHeight(35.f),
 	  mRimThickness(2.f),
 	  pFont(font),
@@ -241,7 +241,6 @@ void Window::addSprite(sf::Sprite *spritePointer, unsigned int layer)
 }
 void Window::addText(sf::Text *textPointer, unsigned int layer)
 {
-	//std::cout << textPointer->getPosition().x << '\t' << textPointer->getPosition().y << std::endl;
 	pScreen->addText(textPointer, layer);
 }
 void Window::addVertexArray(sf::VertexArray *vertexArrayPointer, unsigned int layer)
@@ -253,7 +252,7 @@ void Window::setScreenBackgroundColor(sf::Color backgroundColor)
 	pScreen->setBackgroundColor(backgroundColor);
 }
 
-/*Screen* Window::getScreenPointer() const
+/*Screen* Window::getScreenPointer() const //No good idea! Would give access to the whole screen!!!
 {
 	return pScreen;
 }*/

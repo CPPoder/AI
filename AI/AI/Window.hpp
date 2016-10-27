@@ -42,7 +42,7 @@ private:
 
 
 public:
-	Window(sf::Font *font);
+	Window(sf::Font *font, sf::Vector2f position, sf::Vector2f size);
 	~Window() override;
 
 	void handleEvents() override;

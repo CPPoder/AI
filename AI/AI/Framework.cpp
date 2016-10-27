@@ -11,7 +11,8 @@ Framework::Framework()
 	pArialFont = new sf::Font;
 	pArialFont->loadFromFile("Fonts/arial.ttf");
 
-	sf::Vector2u windowSize(1650, 950);
+	//sf::Vector2u windowSize(1650, 950);
+	sf::Vector2u windowSize(1000, 800);
 	sf::Vector2u worldSize(3000, 3000);
 	pRenderWindow = new sf::RenderWindow(sf::VideoMode(windowSize.x, windowSize.y), "Artificial Intelligence");
 	pRenderWindow->setPosition(sf::Vector2i(10, 10));

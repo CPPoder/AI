@@ -6,6 +6,7 @@
 
 #include <list>
 #include <string>
+#include <functional>
 
 
 
@@ -17,6 +18,10 @@ private:
 	sf::Vector2f mYRange;
 	sf::Vector2f mScreenFillFactor;
 	sf::Vector2f mPlotFieldTranslation;
+
+	unsigned int mXTickNumber;
+	unsigned int mYTickNumber;
+	float mTickLength;
 
 	std::list<sf::VertexArray> mListOfVertexArrays;
 	std::list<sf::Text> mListOfTexts;
@@ -36,6 +41,9 @@ public:
 
 	std::list<sf::VertexArray> getListOfVertexArrays() const;
 	std::list<sf::Text> getListOfTexts() const;
+
+	void setXRange(float low, float high);
+	void setYRange(float low, float high);
 
 private:
 	sf::Vector2f calcPos(sf::Vector2f pos) const;

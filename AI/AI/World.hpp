@@ -37,7 +37,7 @@ private:
 	sf::Time mFoodSpawningTime = sf::seconds(0.02f);
 	sf::Time mTimeSinceLastFoodSpawn = sf::seconds(0.f);
 
-	DataListener mDataListener; //Hier weitermachen!!!
+	DataListener mDataListener;
 	unsigned int mActualNumberOfCarnies;
 	unsigned int mActualNumberOfHerbies;
 	unsigned int mActualNumberOfFood;

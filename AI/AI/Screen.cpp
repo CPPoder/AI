@@ -93,8 +93,9 @@ void Screen::addSprite(sf::Sprite *spritePointer, unsigned int layer)
 }
 void Screen::addText(sf::Text *textPointer, unsigned int layer)
 {
-	//textPointer->setScale(0.001f, 0.001f);
-	textPointer->setScale(1.f / mViewportRectangle.width, 1.f / mViewportRectangle.height);
+	//std::cout << mViewportRectangle.width << '\t' << mViewportRectangle.height << std::endl;
+	textPointer->setScale(1.f / 600.f, 1.f / 600.f);
+	//textPointer->setScale(1.f / mViewportRectangle.width, 1.f / mViewportRectangle.height);
 	mListOfLayeredTexts.push_back(std::pair<sf::Text *, unsigned int>(textPointer, layer));
 	mHighestLayer = myMath::max(mHighestLayer, layer);
 }
@@ -106,6 +107,7 @@ void Screen::addVertexArray(sf::VertexArray *vertexArrayPointer, unsigned int la
 void Screen::setViewport(sf::FloatRect viewportRectangle)
 {
 	mViewportRectangle = viewportRectangle;
+	//refreshTextScales();
 }
 void Screen::moveViewport(sf::Vector2f offset)
 {
@@ -116,6 +118,7 @@ void Screen::setViewportSize(sf::Vector2f size)
 {
 	mViewportRectangle.width = size.x;
 	mViewportRectangle.height = size.y;
+	//refreshTextScales();
 }
 void Screen::changeViewportSize(sf::Vector2f offset)
 {
@@ -184,7 +187,21 @@ void Screen::renderDrawStuffLayer(sf::RenderWindow *pRenderWindow, unsigned int 
 	{
 		if (text.second == layer)
 		{
+			//std::cout << "Render: " << text.first->getScale().x << '\t' << text.first->getScale().y << std::endl;
 			pRenderWindow->draw(*text.first);
 		}
 	}
 }
+
+
+//Refresh Text Scales
+inline void Screen::refreshTextScales()
+{
+	sf::Vector2f newScale = sf::Vector2f(1.f / mViewportRectangle.width, 1.f / mViewportRectangle.height);
+	for (auto text : mListOfLayeredTexts)
+	{
+		text.first->setScale(newScale);
+	}
+}
+
+

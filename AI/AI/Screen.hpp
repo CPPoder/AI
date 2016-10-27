@@ -49,6 +49,7 @@ public:
 private:
 	void deleteDrawStuff();
 	void renderDrawStuffLayer(sf::RenderWindow *pRenderWindow, unsigned int layer);
+	inline void refreshTextScales();
 
 };
 
