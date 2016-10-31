@@ -137,15 +137,15 @@ void World::update(sf::Time frametime, sf::RenderWindow *pRenderWindow)
 	if (pWindow != nullptr && mDataPresenter.getHasChanged())
 	{
 		pWindow->clearDrawStuff();
-		std::list<sf::VertexArray> listOfVertexArrays = mDataPresenter.getListOfVertexArrays();
+		std::list<std::pair<sf::VertexArray, unsigned int>> listOfVertexArrays = mDataPresenter.getListOfVertexArrays();
 		for (auto vertexArray : listOfVertexArrays)
 		{
-			pWindow->addVertexArray(new sf::VertexArray(vertexArray), 0);
+			pWindow->addVertexArray(new sf::VertexArray(vertexArray.first), vertexArray.second);
 		}
-		std::list<sf::Text> listOfTexts = mDataPresenter.getListOfTexts();
+		std::list<std::pair<sf::Text, unsigned int>> listOfTexts = mDataPresenter.getListOfTexts();
 		for (auto text : listOfTexts)
 		{
-			pWindow->addText(new sf::Text(text), 0);
+			pWindow->addText(new sf::Text(text.first), text.second);
 		}
 		mDataPresenter.usedAllNewData();
 	}

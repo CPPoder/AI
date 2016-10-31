@@ -21,6 +21,7 @@ private:
 	sf::Vector2f mPlotFieldTranslation;
 
 	CoordinateSystem mCoordinateSystem;
+	unsigned int mCoordinateSystemLayer;
 
 	bool mDataPresenterChanged;
 
@@ -35,8 +36,8 @@ public:
 
 	void update();
 
-	std::list<sf::VertexArray> getListOfVertexArrays() const;
-	std::list<sf::Text> getListOfTexts() const;
+	std::list<std::pair<sf::VertexArray, unsigned int>> getListOfVertexArrays() const;
+	std::list<std::pair<sf::Text, unsigned int>> getListOfTexts() const;
 	bool getHasChanged() const;
 
 	void usedAllNewData();
