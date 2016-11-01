@@ -13,7 +13,7 @@ World::World(sf::Vector2u worldSize, sf::Font *font)
 	  mActualNumberOfCarnies(0),
 	  mActualNumberOfHerbies(0),
 	  mActualNumberOfFood(0),
-	  mDataPresenter(pFont)
+	  mDataPresenter(pFont, &mDataListener)
 {
 	mWorldBackground.setPosition(0.f, 0.f);
 	mWorldBackground.setSize(mWorldSize);

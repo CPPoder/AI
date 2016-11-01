@@ -45,6 +45,11 @@ public:
 	void setXRange(float low, float high);
 	void setYRange(float low, float high);
 
+	void setXRange(sf::Vector2f xRange);
+	void setYRange(sf::Vector2f yRange);
+
+	void refresh();
+
 private:
 	sf::Vector2f calcPos(sf::Vector2f pos) const;
 	sf::Vector2f calcSFillFactorCorrectedPos(sf::Vector2f pos) const;

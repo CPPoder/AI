@@ -7,11 +7,15 @@
 #include <vector>
 #include <utility>
 
+#include "DataPresenter.hpp"
+
 
 class DataListener
 {
 private:
-	std::vector <std::pair<sf::Time, sf::Vector3<unsigned int>>> mVecOf_Time_CreatureNumb_Pairs;
+	std::vector<std::pair<sf::Time, sf::Vector3<unsigned int>>> mVecOf_Time_CreatureNumb_Pairs;
+
+	bool mNewData;
 
 
 public:
@@ -19,7 +23,9 @@ public:
 	~DataListener();
 
 	void addCreatureNumberData(sf::Time time, unsigned int numberOfCarnivores, unsigned int numberOfHerbivores, unsigned int numberOfFood);
+	
 
+friend class DataPresenter;
 };
 
 

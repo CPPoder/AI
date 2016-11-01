@@ -23,11 +23,59 @@ CoordinateSystem::CoordinateSystem(sf::Vector2f xRange, sf::Vector2f yRange, sf:
 	  mYTickNumber(11),
 	  mTickLength(0.02f)
 {
+	CoordinateSystem::refresh();
+}
+
+
+CoordinateSystem::~CoordinateSystem()
+{
+
+}
+
+
+//Getter
+std::list<sf::VertexArray> CoordinateSystem::getListOfVertexArrays() const
+{
+	std::list<sf::VertexArray> list;
+	for (auto vertexArray : mListOfVertexArrays)
+	{
+		list.push_back(vertexArray);
+	}
+	return list;
+}
+std::list<sf::Text> CoordinateSystem::getListOfTexts() const
+{
+	return mListOfTexts;
+}
+
+//Setter
+void CoordinateSystem::setXRange(float low, float high)
+{
+	mXRange = sf::Vector2f(low, high);
+}
+void CoordinateSystem::setYRange(float low, float high)
+{
+	mYRange = sf::Vector2f(low, high);
+}
+void CoordinateSystem::setXRange(sf::Vector2f xRange)
+{
+	mXRange = xRange;
+}
+void CoordinateSystem::setYRange(sf::Vector2f yRange)
+{
+	mYRange = yRange;
+}
+void CoordinateSystem::refresh()
+{
+	//Clear Lists
+	mListOfVertexArrays.clear();
+	mListOfTexts.clear();
+
 	//Frame
 	sf::VertexArray frame(sf::LinesStrip, 5);
 	for (unsigned int i = 0; i < 5; i++)
 	{
-	frame[i].color = sf::Color::Black;
+		frame[i].color = sf::Color::Black;
 	}
 	frame[0].position = calcSFillFactorCorrectedPos(sf::Vector2f(0.f, 0.f));
 	frame[1].position = calcSFillFactorCorrectedPos(sf::Vector2f(1.f, 0.f));
@@ -38,8 +86,8 @@ CoordinateSystem::CoordinateSystem(sf::Vector2f xRange, sf::Vector2f yRange, sf:
 
 	//Ticks
 	unsigned int totalTickNumber = (2 * mXTickNumber + 2 * mYTickNumber);
-	sf::VertexArray tics(sf::Lines, 2*totalTickNumber);
-	for (unsigned int i = 0; i < 2*totalTickNumber; i++) //Color
+	sf::VertexArray tics(sf::Lines, 2 * totalTickNumber);
+	for (unsigned int i = 0; i < 2 * totalTickNumber; i++) //Color
 	{
 		tics[i].color = sf::Color::Black;
 	}
@@ -88,25 +136,25 @@ CoordinateSystem::CoordinateSystem(sf::Vector2f xRange, sf::Vector2f yRange, sf:
 		}
 		return out;
 	};
-	for (unsigned int i = 0; i < 2*mXTickNumber; i = i + 2) //Lower xTicks
+	for (unsigned int i = 0; i < 2 * mXTickNumber; i = i + 2) //Lower xTicks
 	{
-		tics[i].position = calcSFillFactorCorrectedPos(GetXTicksPosition(i/2, mXTickNumber, true, true, true));
-		tics[i+1].position = calcSFillFactorCorrectedPos(GetXTicksPosition(i/2, mXTickNumber, false, true, true));
+		tics[i].position = calcSFillFactorCorrectedPos(GetXTicksPosition(i / 2, mXTickNumber, true, true, true));
+		tics[i + 1].position = calcSFillFactorCorrectedPos(GetXTicksPosition(i / 2, mXTickNumber, false, true, true));
 	}
-	for (unsigned int i = 0; i < 2*mXTickNumber; i = i + 2) //Higher xTicks
+	for (unsigned int i = 0; i < 2 * mXTickNumber; i = i + 2) //Higher xTicks
 	{
-		tics[i + 2 * mXTickNumber].position = calcSFillFactorCorrectedPos(GetXTicksPosition(i/2, mXTickNumber, true, false, true));
-		tics[i + 1 + 2 * mXTickNumber].position = calcSFillFactorCorrectedPos(GetXTicksPosition(i/2, mXTickNumber, false, false, true));
+		tics[i + 2 * mXTickNumber].position = calcSFillFactorCorrectedPos(GetXTicksPosition(i / 2, mXTickNumber, true, false, true));
+		tics[i + 1 + 2 * mXTickNumber].position = calcSFillFactorCorrectedPos(GetXTicksPosition(i / 2, mXTickNumber, false, false, true));
 	}
-	for (unsigned int i = 0; i < 2*mXTickNumber; i = i + 2) //Lower yTicks
+	for (unsigned int i = 0; i < 2 * mXTickNumber; i = i + 2) //Lower yTicks
 	{
-		tics[i + 4 * mXTickNumber].position = calcSFillFactorCorrectedPos(GetXTicksPosition(i/2, mYTickNumber, true, true, false));
-		tics[i + 1 + 4 * mXTickNumber].position = calcSFillFactorCorrectedPos(GetXTicksPosition(i/2, mYTickNumber, false, true, false));
+		tics[i + 4 * mXTickNumber].position = calcSFillFactorCorrectedPos(GetXTicksPosition(i / 2, mYTickNumber, true, true, false));
+		tics[i + 1 + 4 * mXTickNumber].position = calcSFillFactorCorrectedPos(GetXTicksPosition(i / 2, mYTickNumber, false, true, false));
 	}
-	for (unsigned int i = 0; i < 2*mXTickNumber; i = i + 2) //Higher yTicks
+	for (unsigned int i = 0; i < 2 * mXTickNumber; i = i + 2) //Higher yTicks
 	{
-		tics[i + 2 * mYTickNumber + 4 * mXTickNumber].position = calcSFillFactorCorrectedPos(GetXTicksPosition(i/2, mYTickNumber, true, false, false));
-		tics[i + 1 + 2 * mYTickNumber + 4 * mXTickNumber].position = calcSFillFactorCorrectedPos(GetXTicksPosition(i/2, mYTickNumber, false, false, false));
+		tics[i + 2 * mYTickNumber + 4 * mXTickNumber].position = calcSFillFactorCorrectedPos(GetXTicksPosition(i / 2, mYTickNumber, true, false, false));
+		tics[i + 1 + 2 * mYTickNumber + 4 * mXTickNumber].position = calcSFillFactorCorrectedPos(GetXTicksPosition(i / 2, mYTickNumber, false, false, false));
 	}
 	mListOfVertexArrays.push_back(tics);
 
@@ -134,37 +182,6 @@ CoordinateSystem::CoordinateSystem(sf::Vector2f xRange, sf::Vector2f yRange, sf:
 	mListOfTexts.push_back(yLabelText);
 }
 
-
-CoordinateSystem::~CoordinateSystem()
-{
-
-}
-
-
-//Getter
-std::list<sf::VertexArray> CoordinateSystem::getListOfVertexArrays() const
-{
-	std::list<sf::VertexArray> list;
-	for (auto vertexArray : mListOfVertexArrays)
-	{
-		list.push_back(vertexArray);
-	}
-	return list;
-}
-std::list<sf::Text> CoordinateSystem::getListOfTexts() const
-{
-	return mListOfTexts;
-}
-
-//Setter
-void CoordinateSystem::setXRange(float low, float high)
-{
-	mXRange = sf::Vector2f(low, high);
-}
-void CoordinateSystem::setYRange(float low, float high)
-{
-	mYRange = sf::Vector2f(low, high);
-}
 
 
 
