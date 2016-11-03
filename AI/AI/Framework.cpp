@@ -11,8 +11,8 @@ Framework::Framework()
 	pArialFont = new sf::Font;
 	pArialFont->loadFromFile("Fonts/arial.ttf");
 
-	//sf::Vector2u windowSize(1650, 950);
-	sf::Vector2u windowSize(1000, 800);
+	sf::Vector2u windowSize(1650, 950);
+	//sf::Vector2u windowSize(1000, 800);
 	sf::Vector2u worldSize(3000, 3000);
 	pRenderWindow = new sf::RenderWindow(sf::VideoMode(windowSize.x, windowSize.y), "Artificial Intelligence");
 	pRenderWindow->setPosition(sf::Vector2i(10, 10));
@@ -67,11 +67,8 @@ void Framework::handleEvents()
 
 void Framework::update()
 {
-	//Measuring Frametime
-	mFrametime = pClock->restart();
-
 	//Adjusting mTimeFactor
-	float const adjustingTFConstant = 10.01f;
+	float const adjustingTFConstant = 10.f;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Add))
 	{
 		mTimeFactor = mTimeFactor * pow(adjustingTFConstant, mFrametime.asSeconds());
@@ -100,7 +97,7 @@ void Framework::update()
 	}
 
 	//Updating the world
-	pWorld->update(usedTimeFactor * mFrametime, pRenderWindow);
+	pWorld->update(mFixedEvolutionTime, pRenderWindow);
 
 
 	//Change View
@@ -175,6 +172,23 @@ void Framework::render()
 	pRenderWindow->display();
 }
 
+void Framework::manageFPS()
+{
+	//Measuring Frametime
+	mFrametime = pClock->restart();
+
+	if (mFrametime * mTimeFactor < mFixedEvolutionTime)
+	{
+		sf::Time diffTime = mFixedEvolutionTime - mFrametime * mTimeFactor;
+		sf::sleep(diffTime);
+		pTextTimeFactor->setColor(sf::Color::White);
+	}
+	else
+	{
+		pTextTimeFactor->setColor(sf::Color::Red);
+	}
+}
+
 
 //Run
 void Framework::run()
@@ -182,6 +196,7 @@ void Framework::run()
 	while (pRenderWindow->isOpen())
 	{
 		handleEvents();
+		manageFPS();
 		update();
 		render();
 	}

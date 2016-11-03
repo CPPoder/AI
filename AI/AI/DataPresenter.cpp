@@ -48,6 +48,10 @@ void DataPresenter::update()
 		mCoordinateSystem.setYRange(mYRange);
 		mCoordinateSystem.refresh();
 
+		float foodScale = 1.f;
+		float herbScale = 4.f;
+		float carnScale = 15.f;
+
 		//Set Drawing Stuff
 		mListOfVertexArrays.clear();
 		{ //Food
@@ -57,7 +61,7 @@ void DataPresenter::update()
 			unsigned int vertexNum = 0;
 			for (auto data : *dataVectorPointer)
 			{
-				sf::Vector2f position = DataPresenter::calcSFillFactorCorrectedPos(DataPresenter::calcRelPosOnScreen(sf::Vector2f(data.first.asSeconds(), static_cast<float>(data.second.z))));
+				sf::Vector2f position = DataPresenter::calcSFillFactorCorrectedPos(DataPresenter::calcRelPosOnScreen(sf::Vector2f(data.first.asSeconds(), static_cast<float>(data.second.z*foodScale))));
 				vertexArrayFood[vertexNum].color = foodColor;
 				vertexArrayFood[vertexNum].position = position;
 				vertexNum++;
@@ -71,7 +75,7 @@ void DataPresenter::update()
 			unsigned int vertexNum = 0;
 			for (auto data : *dataVectorPointer)
 			{
-				sf::Vector2f position = DataPresenter::calcSFillFactorCorrectedPos(DataPresenter::calcRelPosOnScreen(sf::Vector2f(data.first.asSeconds(), static_cast<float>(data.second.y))));
+				sf::Vector2f position = DataPresenter::calcSFillFactorCorrectedPos(DataPresenter::calcRelPosOnScreen(sf::Vector2f(data.first.asSeconds(), static_cast<float>(data.second.y*herbScale))));
 				vertexArrayHerb[vertexNum].color = herbColor;
 				vertexArrayHerb[vertexNum].position = position;
 				vertexNum++;
@@ -85,7 +89,7 @@ void DataPresenter::update()
 			unsigned int vertexNum = 0;
 			for (auto data : *dataVectorPointer)
 			{
-				sf::Vector2f position = DataPresenter::calcSFillFactorCorrectedPos(DataPresenter::calcRelPosOnScreen(sf::Vector2f(data.first.asSeconds(), static_cast<float>(data.second.x))));
+				sf::Vector2f position = DataPresenter::calcSFillFactorCorrectedPos(DataPresenter::calcRelPosOnScreen(sf::Vector2f(data.first.asSeconds(), static_cast<float>(data.second.x*carnScale))));
 				vertexArrayCarn[vertexNum].color = carnColor;
 				vertexArrayCarn[vertexNum].position = position;
 				vertexNum++;

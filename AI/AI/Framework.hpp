@@ -26,9 +26,12 @@ private:
 	unsigned int mFPSCounter;
 	float mTimeFactor;
 
+	sf::Time const mFixedEvolutionTime = sf::seconds(1.f / 20.f);
+
 	void handleEvents();
 	void update();
 	void render();
+	void manageFPS();
 
 
 public:
